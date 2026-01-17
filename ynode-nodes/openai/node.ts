@@ -4,12 +4,13 @@ import type { ExecutionContext, NodeOutput } from '@ynode/core';
 
 const configSchema = z.object({
     credentialId: z.string().default(''),
+    apiUrl: z.string().url().default('https://api.openai.com/v1/chat/completions'),
     model: z
         .enum(['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-3.5-turbo'])
         .default('gpt-4o-mini'),
     systemPrompt: z.string().default('You are a helpful assistant.'),
     temperature: z.number().min(0).max(2).default(0.7),
-    maxTokens: z.number().min(1).max(4096).default(1024),
+    maxTokens: z.number().min(1).max(Number.MAX_SAFE_INTEGER-1).default(1024),
 });
 
 type OpenAIConfig = z.infer<typeof configSchema>;
@@ -37,6 +38,13 @@ export const openaiNode = defineNode<OpenAIConfig>({
             required: true,
             description: 'The prompt to send to OpenAI',
         },
+        {
+            id: 'model_override',
+            label: 'Model',
+            type: 'string',
+            required: false,
+            description: "Override model"
+        }
     ],
 
     outputs: [
@@ -63,6 +71,7 @@ export const openaiNode = defineNode<OpenAIConfig>({
     configSchema,
     defaultConfig: {
         credentialId: '',
+        apiUrl: 'https://api.openai.com/v1/chat/completions',
         model: 'gpt-4o-mini',
         systemPrompt: 'You are a helpful assistant.',
         temperature: 0.7,
@@ -100,11 +109,12 @@ export const openaiNode = defineNode<OpenAIConfig>({
         try {
             const creds = await credentials.get(config.credentialId);
             const apiKey = creds.apiKey;
+            const model = inputs.model_override ? (inputs.model_override as string) : config.model
 
-            log(`Calling OpenAI ${config.model}...`);
-
+            log(`Calling ${config.apiUrl} for ${model}...`);
+            
             const response = await fetch(
-                'https://api.openai.com/v1/chat/completions',
+                config.apiUrl,
                 {
                     method: 'POST',
                     headers: {
@@ -112,7 +122,7 @@ export const openaiNode = defineNode<OpenAIConfig>({
                         Authorization: `Bearer ${apiKey}`,
                     },
                     body: JSON.stringify({
-                        model: config.model,
+                        model: model,
                         messages: [
                             { role: 'system', content: config.systemPrompt },
                             { role: 'user', content: prompt },
@@ -136,7 +146,7 @@ export const openaiNode = defineNode<OpenAIConfig>({
             return {
                 data: {
                     default: { content, usage: data.usage },
-                    response: { content, usage: data.usage, model: config.model },
+                    response: { content, usage: data.usage, model: model },
                     text: content,
                 },
             };
