@@ -1,108 +1,159 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="media/logo_white_orange.svg">
-    <img src="media/logo_black.svg" width="48" alt="ynode logo">
+    <img src="media/logo_black.svg" width="48" alt="ynode logo" style="vertical-align: middle;">
   </picture>
+  <span style="font-size: 36px; vertical-align: middle; margin-left: 8px;">y<span style="color: #E5A01F">node</span></span>
 </p>
 
-<p align="center">
-  y<strong>node</strong> is <strong>Open-source visual workflow automation.</strong><br />
-  Built for everyone
-</p>
+<div align="center"><b>———&nbsp;&nbsp;&nbsp;open-source visual workflow automation&nbsp;&nbsp;&nbsp;———</b></div>
+<br />
 
-<p align="center">
-  <a href="#quick-start">Quick Start</a> •
-  <a href="packages/ynode-core/README.md">Core</a> •
-  <a href="packages/ynode-cli/README.md">CLI</a> •
-  <a href="CONTRIBUTING.md">Contributing</a> •
-  <a href="/LICENSE">License</a>
-</p>
-
-<div align="center">
-
-![License](https://img.shields.io/badge/license-AGPL--3.0-emerald?style=flat-square)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)
-![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
-![Node](https://img.shields.io/badge/Node-18+-339933?style=flat-square&logo=node.js)
-
+<div align='center'>
+  <a href="CONTRIBUTING.md" target="_blank">
+    <img src="https://img.shields.io/badge/contributing-mediumslateblue?style=for-the-badge&logo=github&logoColor=white" alt="contributing" style="margin-bottom: 5px;"/>
+  </a>
 </div>
 
-<p align="center">
-  <img src="media/ynode.gif" alt="ynode demo" width="100%">
-</p>
+<div align='center'>
+  <img src="https://img.shields.io/badge/License-AGPL--3.0-orange?style=for-the-badge" alt="license" style="margin-bottom: 5px;"/>
+  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="typescript" style="margin-bottom: 5px;"/>
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="react" style="margin-bottom: 5px;"/>
+  <img src="https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="node" style="margin-bottom: 5px;"/>
+</div>
+<br/>
 
----
+> [!NOTE]
+> ynode is **actively developed**. We welcome contributions, feedback, and feature requests!
 
-## ✨ Features
+## <img height="18" src="https://octicons-col.vercel.app/sparkle/E5A01F">&nbsp;&nbsp;Key Features
 
-- **Visual Builder** - Intuitive node-based editor powered by React Flow.
-- **Extensible** - Add custom nodes easily via CLI.
-- **Secure** - Built-in encryption for credentials + you hold your data.
-- **Monorepo** - Clean architecture using pnpm workspaces.
+- <img height="15" src="https://octicons-col.vercel.app/paintbrush/E5A01F"> **Visual Builder**: Intuitive node-based editor powered by React Flow.
+- <img height="15" src="https://octicons-col.vercel.app/plug/E5A01F"> **Extensible**: Add custom nodes easily via CLI scaffolding.
+- <img height="15" src="https://octicons-col.vercel.app/shield-lock/E5A01F"> **Secure**: Built-in encryption for credentials + you own your data.
+- <img height="15" src="https://octicons-col.vercel.app/home/E5A01F"> **Self-Hosted**: Deploy within your infrastructure with full autonomy.
+- <img height="15" src="https://octicons-col.vercel.app/package/E5A01F"> **Monorepo**: Clean architecture using pnpm workspaces.
+<br />
+<div align="center"><b>———&nbsp;&nbsp;&nbsp;y<span style="color: #E5A01F">node</span> is designed to be the automation backbone for everyone!&nbsp;&nbsp;&nbsp;———</b></div>
 
-## 🏗️ FullStack Structure
+## <img height="18" src="https://octicons-col.vercel.app/device-desktop/E5A01F">&nbsp;&nbsp;Demo
 
-```text
+<div align='center'>
+  <img alt="ynode demo" style="border-radius: 30px; border: 2px solid #E5A01F;" src="media/ynode.gif" width="100%"></img>
+</div>
+
+## <img height="18" src="https://octicons-col.vercel.app/package-dependencies/E5A01F">&nbsp;&nbsp;Project Structure
+
+```
 ynode/
-├── packages/
-│   ├── 🛠️ ynode-core      # Shared types, node definitions, & serialization
-│   └── 💻 ynode-cli       # Development tools (scaffolding & validation)
-├── ynode-app          # Frontend (React + Vite + React Flow)
-└── ynode-server       # Backend (Express + SQLite + WebSocket)
+│
+├── 📦 packages/
+│   ├── @ynode/core        # Shared types, node definitions, & serialization
+│   └── ynode-cli          # Development tools (scaffolding & validation)
+│
+├── 🎨 ynode-app           # Frontend (React + Vite + React Flow)
+└── ⚡ ynode-server        # Backend (Express + SQLite + WebSocket)
 ```
 
-## Quick Start
 
-### 1. Requirements
+## <img height="18" src="https://octicons-col.vercel.app/rocket/E5A01F">&nbsp;&nbsp;Quick Start
 
-Ensure you have [pnpm](https://pnpm.io/) and [Node.js](https://nodejs.org/) installed.
+#### PREREQUISITES
 
-### 2. Installation
+##### <img height="14" src="https://octicons-col.vercel.app/download/E5A01F">&nbsp;&nbsp;Requirements
+
+- [Node.js](https://nodejs.org/) 18 or higher
+- [pnpm](https://pnpm.io/) package manager
+
+##
+
+#### INSTALLATION
+
+##### <img height="14" src="https://octicons-col.vercel.app/repo-clone/E5A01F">&nbsp;&nbsp;1. Clone the Repository
 
 ```bash
-# Clone the repository
 git clone https://github.com/iamyureka/ynode.git
 cd ynode
+```
 
-# Install all dependencies
+##### <img height="14" src="https://octicons-col.vercel.app/package/E5A01F">&nbsp;&nbsp;2. Install Dependencies
+
+```bash
 pnpm install
+```
 
-# Build the core library
+##### <img height="14" src="https://octicons-col.vercel.app/tools/E5A01F">&nbsp;&nbsp;3. Build Core Library
+
+```bash
 pnpm --filter @ynode/core build
 ```
 
-### 3. Run Development Servers
+##
 
-Open two terminals or use a task runner:
+#### DEVELOPMENT
+
+##### <img height="14" src="https://octicons-col.vercel.app/server/E5A01F">&nbsp;&nbsp;Start Backend
 
 ```bash
-# Terminal 1: Backend
 pnpm --filter ynode-server dev
+```
 
-# Terminal 2: Frontend
+##### <img height="14" src="https://octicons-col.vercel.app/browser/E5A01F">&nbsp;&nbsp;Start Frontend
+
+```bash
 pnpm --filter ynode-app dev
 ```
 
-- **App**: [http://localhost:5173](http://localhost:5173)
-- **API**: [http://localhost:3001](http://localhost:3001)
+| Service | URL                   |
+| ------- | --------------------- |
+| **App** | http://localhost:5173 |
+| **API** | http://localhost:3001 |
 
-## 🎮 Canvas Controls
+## <img height="18" src="https://octicons-col.vercel.app/pivot-column/E5A01F">&nbsp;&nbsp;Canvas Controls
 
-- **Left Drag** - Draw selection box to multi-select nodes.
-- **Right Drag** - Pan across the canvas.
-- **Ctrl + Click** - Toggle individual node selection.
-- **Key [C]** - Wrap selected nodes in a comment/group box.
-- **Key [Delete/Backspace]** - Remove selected nodes.
-- **Ctrl + [C/V/D]** - Copy, Paste, or Duplicate selected nodes.
+| Action                                                                                         | Shortcut                    |
+| ---------------------------------------------------------------------------------------------- | --------------------------- |
+| <img height="12" src="https://octicons-col.vercel.app/multi-select/E5A01F"> Multi-select nodes | `Left Drag` (selection box) |
+| <img height="12" src="https://octicons-col.vercel.app/move-to-start/E5A01F"> Pan canvas        | `Right Drag`                |
+| <img height="12" src="https://octicons-col.vercel.app/diff-added/E5A01F"> Toggle selection     | `Ctrl + Click`              |
+| <img height="12" src="https://octicons-col.vercel.app/comment/E5A01F"> Create comment          | `C`                         |
+| <img height="12" src="https://octicons-col.vercel.app/trash/E5A01F"> Delete nodes              | `Delete` / `Backspace`      |
+| <img height="12" src="https://octicons-col.vercel.app/copy/E5A01F"> Copy / Paste / Duplicate   | `Ctrl + C` / `V` / `D`      |
 
-## 🛠️ Custom Nodes
+## <img height="18" src="https://octicons-col.vercel.app/plug/E5A01F">&nbsp;&nbsp;Custom Nodes
 
-To create a new node, you can use the CLI
-For detailed instructions, see the [CLI Documentation](packages/ynode-cli/README.md).
+Create custom nodes using the CLI for seamless integration with your workflows.
 
----
+```bash
+# Scaffold a new node
+pnpm --filter ynode-cli create my-custom-node
+```
 
-## Support
+> [!TIP]
+>
+> For detailed instructions, see the [CLI Documentation](packages/ynode-cli/README.md).
+
+## <img height="18" src="https://octicons-col.vercel.app/book/E5A01F">&nbsp;&nbsp;Documentation
+
+| Package                                      | Description                                     |
+| -------------------------------------------- | ----------------------------------------------- |
+| [@ynode/core](packages/ynode-core/README.md) | Shared types, node definitions, & serialization |
+| [ynode-cli](packages/ynode-cli/README.md)    | CLI tools for scaffolding custom nodes          |
+
+## <img height="18" src="https://octicons-col.vercel.app/people/E5A01F">&nbsp;&nbsp;Contributing
+
+Interested in contributing to ynode?<br> Check out our [Contributing Guide](CONTRIBUTING.md) for instructions on getting started
+
+## <img height="18" src="https://octicons-col.vercel.app/heart/E5A01F">&nbsp;&nbsp;Support
 
 If ynode helps your workflow, consider supporting its development:
-☕ [Buy Me a Coffee](https://paypal.me/bangmey)
+
+<a href="https://paypal.me/bangmey" target="_blank">
+  <img src="https://img.shields.io/badge/PayPal-Support_Development-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="PayPal"/>
+</a>
+
+## <img height="18" src="https://octicons-col.vercel.app/law/E5A01F">&nbsp;&nbsp;License
+
+This project is licensed under the [AGPL-3.0 License](LICENSE).
+
+---
