@@ -101,10 +101,10 @@ outputs.result = $input;
         }
 
         try {
-            // @ts-ignore
-            const ivmModule = await import('isolated-vm');
-            const ivm = ivmModule.default || ivmModule;
+            // @ts-ignore - "Cannot find module"
+            const vm = await import('node:vm');
 
+            // TODO: Setting to enable/disable memory so that this process is skipped when not needed?
             // Retrieve memory values
             const memoryKeys = await memory.list();
             const workflowMemoryKeys = await workflowMemory.list();
@@ -118,61 +118,40 @@ outputs.result = $input;
             for (const key of workflowMemoryKeys) {
                 workflowMemoryData[key] = await workflowMemory.get(key);
             }
-
             const $input = inputs.data ?? inputs.trigger ?? null;
 
-            // Create isolated VM instance with memory limit
-            const isolate = new ivm.Isolate({
-                memoryLimit: config.memoryLimit || 128,
-            });
-
-            const context = await isolate.createContext();
-
-            // Create jail (global object in isolated context)
-            const jail = context.global;
-
-            // Set input data
-            await jail.set('$input', new ivm.ExternalCopy($input).copyInto());
-            await jail.set('inputs', new ivm.ExternalCopy(inputs).copyInto());
-            await jail.set(
-                '_memoryData',
-                new ivm.ExternalCopy(memoryData).copyInto()
-            );
-            await jail.set(
-                '_workflowMemoryData',
-                new ivm.ExternalCopy(workflowMemoryData).copyInto()
-            );
-
-            // Create outputs object in isolate
-            await jail.set('outputs', {}, { copy: true });
-            await jail.set('_memoryUpdates', {}, { copy: true });
-            await jail.set('_workflowMemoryUpdates', {}, { copy: true });
-
-            // Add console logging with callback
+            // TODO: logMessages UNUSED!
             const logMessages: string[] = [];
-            await jail.set(
-                '_logCallback',
-                new ivm.Reference((msg: string) => {
+
+            const context = {
+                $input: $input,
+                inputs: inputs,
+                _memoryData: memoryData,
+                _workflowMemoryData: workflowMemoryData,
+                outputs: {result: null},
+                _memoryUpdates: {},
+                _workflowMemoryUpdates: {},
+                _logCallback: (msg: string) => {
                     logMessages.push(msg);
                     log(msg);
-                })
-            );
+                }
+            }
 
             // Setup safe environment in isolate
-            await context.eval(`
+            const setupScript = new vm.Script(`
                 // Setup console
                 globalThis.console = {
                     log: (...args) => {
-                        const msg = args.map(a => String(a)).join(' ');
-                        _logCallback.applySync(undefined, [msg]);
+                        const msg = '${this.label}| ' + args.map(a => String(a)).join(' ');
+                        _logCallback(msg);
                     },
                     warn: (...args) => {
-                        const msg = 'WARN: ' + args.map(a => String(a)).join(' ');
-                        _logCallback.applySync(undefined, [msg]);
+                        const msg = '${this.label}| WARN: ' + args.map(a => String(a)).join(' ');
+                        _logCallback(msg);
                     },
                     error: (...args) => {
-                        const msg = 'ERROR: ' + args.map(a => String(a)).join(' ');
-                        _logCallback.applySync(undefined, [msg]);
+                        const msg = '${this.label}| ERROR: ' + args.map(a => String(a)).join(' ');
+                        _logCallback(msg);
                     }
                 };
 
@@ -204,20 +183,19 @@ outputs.result = $input;
                 globalThis.Set = Set;
             `);
 
+            // Create context and run setup
+            vm.createContext(context);
+            await setupScript.runInContext(context);
+
             // Run user code with timeout
             const timeout = config.timeout || 30000;
-            await context.eval(config.code, { timeout });
+            const userScript = new vm.Script(config.code);
+            await userScript.runInContext(context, { timeout: timeout});
 
-            // Extract results from isolate
-            const outputsRef = await jail.get('outputs');
-            const outputs = await outputsRef.copy();
-
-            const memoryUpdatesRef = await jail.get('_memoryUpdates');
-            const extractedMemoryUpdates = await memoryUpdatesRef.copy();
-
-            const workflowMemoryUpdatesRef = await jail.get('_workflowMemoryUpdates');
-            const extractedWorkflowMemoryUpdates =
-                await workflowMemoryUpdatesRef.copy();
+            // Extract results from VM
+            const outputs = context.outputs;
+            const extractedMemoryUpdates = context._memoryUpdates;
+            const extractedWorkflowMemoryUpdates = context._workflowMemoryUpdates;
 
             // Persist memory updates
             for (const [key, value] of Object.entries(extractedMemoryUpdates)) {
@@ -236,9 +214,6 @@ outputs.result = $input;
                     await workflowMemory.set(key, value);
                 }
             }
-
-            // Cleanup
-            isolate.dispose();
 
             log(`Code executed successfully`);
 
