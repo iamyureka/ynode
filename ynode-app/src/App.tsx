@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
 import { useNodeTypesStore } from './store/nodeTypesStore';
 import { AuthScreen } from './components/Auth/AuthScreen';
+import { NodeAssembler } from './components/NodeAssembler';
 import './index.css';
 
 const AppLayout = lazy(() =>
@@ -69,49 +70,53 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route
-            path="/auth"
-            element={!user ? <AuthScreen /> : <Navigate to="/" />}
-          />
+    <>
+      <BrowserRouter>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route
+              path="/auth"
+              element={!user ? <AuthScreen /> : <Navigate to="/" />}
+            />
 
-          {user ? (
-            <>
-              <Route element={<AppLayout />}>
-                <Route path="/" element={<Overview />} />
-                <Route path="/executions" element={<Executions />} />
-                <Route
-                  path="/executions/:executionId"
-                  element={<ExecutionDetails />}
-                />
-                <Route
-                  path="/settings"
-                  element={<Navigate to="/settings/credentials" />}
-                />
-                <Route
-                  path="/settings/credentials"
-                  element={<CredentialsPage />}
-                />
-                <Route path="/workflows" element={<Workflows />} />
-                <Route
-                  path="/editor/:workflowId?"
-                  element={<WorkflowEditor />}
-                />
-                <Route
-                  path="/new-workflow"
-                  element={<Navigate to="/editor" />}
-                />
-              </Route>
-            </>
-          ) : (
-            <Route path="*" element={<Navigate to="/auth" />} />
-          )}
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+            {user ? (
+              <>
+                <Route element={<AppLayout />}>
+                  <Route path="/" element={<Overview />} />
+                  <Route path="/executions" element={<Executions />} />
+                  <Route
+                    path="/executions/:executionId"
+                    element={<ExecutionDetails />}
+                  />
+                  <Route
+                    path="/settings"
+                    element={<Navigate to="/settings/credentials" />}
+                  />
+                  <Route
+                    path="/settings/credentials"
+                    element={<CredentialsPage />}
+                  />
+                  <Route path="/workflows" element={<Workflows />} />
+                  <Route
+                    path="/editor/:workflowId?"
+                    element={<WorkflowEditor />}
+                  />
+                  <Route
+                    path="/new-workflow"
+                    element={<Navigate to="/editor" />}
+                  />
+                </Route>
+              </>
+            ) : (
+              <Route path="*" element={<Navigate to="/auth" />} />
+            )}
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+      <NodeAssembler />
+    </>
   );
 }
 
 export default App;
+

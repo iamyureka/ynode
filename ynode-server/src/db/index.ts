@@ -7,7 +7,8 @@ import './migrations/001_initial_schema';
 import './migrations/002_audit_logs';
 import './migrations/003_sessions';
 import './migrations/004_password_history';
-import './migrations/006_credentials_memory';
+import './migrations/005_credentials_memory';
+import './migrations/006_custom_nodes';
 import { runMigrations } from './migrations';
 
 const dbDir = path.dirname(config.dbPath);

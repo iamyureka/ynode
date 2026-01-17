@@ -59,6 +59,19 @@ import {
   getAllWorkflowMemory,
   deleteMemory as deleteWorkflowMemory,
 } from './db/memory.js';
+import {
+  getCustomNodesByUserId,
+  getUserOwnedCustomNodes,
+  getCustomNodeById,
+  isCustomNodeTypeAvailable,
+  createCustomNode,
+  updateCustomNode,
+  deleteCustomNode,
+  getCustomNodeVersions,
+  restoreCustomNodeVersion,
+  customNodeRowToApi,
+} from './db/customNodes.js';
+import { testCustomNodeCode } from './executor/customNodeExecutor.js';
 import { executeWorkflow } from './executor/index.js';
 import {
   registerBuiltinNodes,
@@ -835,6 +848,319 @@ registerBuiltinNodes();
     } catch (error) {
       console.error('DELETE /api/workflows/:id/memory/:key error:', error);
       res.status(500).json({ error: 'Failed to delete memory entry' });
+    }
+  });
+
+  // ============================================================
+  // CUSTOM NODES API (Node Assembler)
+  // ============================================================
+
+  /**
+   * GET /api/custom-nodes
+   * Returns all custom nodes visible to the user (own + public)
+   */
+  app.get('/api/custom-nodes', authMiddleware, (req, res) => {
+    try {
+      const includePublic = req.query.includePublic !== 'false';
+      const rows = includePublic
+        ? getCustomNodesByUserId(req.userId!)
+        : getUserOwnedCustomNodes(req.userId!);
+
+      const customNodes = rows.map(customNodeRowToApi);
+      res.json({ customNodes, count: customNodes.length });
+    } catch (error) {
+      console.error('GET /api/custom-nodes error:', error);
+      res.status(500).json({ error: 'Failed to fetch custom nodes' });
+    }
+  });
+
+  /**
+   * GET /api/custom-nodes/:id
+   * Get a single custom node by ID
+   */
+  app.get('/api/custom-nodes/:id', authMiddleware, (req, res) => {
+    try {
+      const id = getParam(req.params.id);
+      const row = getCustomNodeById(id);
+
+      if (!row) {
+        return res.status(404).json({ error: 'Custom node not found' });
+      }
+
+      // Check access: must be owner or public
+      if (row.user_id !== req.userId && row.is_public !== 1) {
+        return res.status(403).json({ error: 'Not authorized' });
+      }
+
+      res.json(customNodeRowToApi(row));
+    } catch (error) {
+      console.error('GET /api/custom-nodes/:id error:', error);
+      res.status(500).json({ error: 'Failed to fetch custom node' });
+    }
+  });
+
+  /**
+   * POST /api/custom-nodes
+   * Create a new custom node
+   */
+  app.post('/api/custom-nodes', authMiddleware, async (req, res) => {
+    try {
+      const {
+        type,
+        label,
+        description,
+        category,
+        icon,
+        color,
+        inputs,
+        outputs,
+        configSchema,
+        defaultConfig,
+        code,
+        usesMemory,
+        usesWorkflowMemory,
+        requiresNetwork,
+        credentials,
+        isPublic,
+      } = req.body;
+
+      if (!label) {
+        return res.status(400).json({ error: 'Label is required' });
+      }
+
+      if (!code) {
+        return res.status(400).json({ error: 'Code is required' });
+      }
+
+      if (!inputs || !Array.isArray(inputs)) {
+        return res.status(400).json({ error: 'Inputs array is required' });
+      }
+
+      if (!outputs || !Array.isArray(outputs)) {
+        return res.status(400).json({ error: 'Outputs array is required' });
+      }
+
+      // Check type uniqueness if provided
+      if (type && !isCustomNodeTypeAvailable(type)) {
+        return res
+          .status(409)
+          .json({ error: `Node type "${type}" is already taken` });
+      }
+
+      const row = createCustomNode(req.userId!, {
+        type,
+        label,
+        description,
+        category,
+        icon,
+        color,
+        inputs,
+        outputs,
+        configSchema,
+        defaultConfig,
+        code,
+        usesMemory,
+        usesWorkflowMemory,
+        requiresNetwork,
+        credentials,
+        isPublic,
+      });
+
+      auditService.log(AuditAction.WORKFLOW_CREATED, {
+        userId: req.userId,
+        req,
+        resourceType: 'custom_node',
+        resourceId: row.id,
+      });
+
+      res.status(201).json(customNodeRowToApi(row));
+    } catch (error) {
+      console.error('POST /api/custom-nodes error:', error);
+      res.status(500).json({ error: 'Failed to create custom node' });
+    }
+  });
+
+  /**
+   * PUT /api/custom-nodes/:id
+   * Update a custom node (creates a new version)
+   */
+  app.put('/api/custom-nodes/:id', authMiddleware, async (req, res) => {
+    try {
+      const id = getParam(req.params.id);
+      const existing = getCustomNodeById(id);
+
+      if (!existing) {
+        return res.status(404).json({ error: 'Custom node not found' });
+      }
+
+      if (existing.user_id !== req.userId) {
+        return res.status(403).json({ error: 'Not authorized' });
+      }
+
+      const { changeNotes, ...updates } = req.body;
+
+      const updated = updateCustomNode(id, updates, changeNotes);
+
+      if (!updated) {
+        return res.status(500).json({ error: 'Failed to update custom node' });
+      }
+
+      auditService.log(AuditAction.WORKFLOW_UPDATED, {
+        userId: req.userId,
+        req,
+        resourceType: 'custom_node',
+        resourceId: id,
+      });
+
+      res.json(customNodeRowToApi(updated));
+    } catch (error) {
+      console.error('PUT /api/custom-nodes/:id error:', error);
+      res.status(500).json({ error: 'Failed to update custom node' });
+    }
+  });
+
+  /**
+   * DELETE /api/custom-nodes/:id
+   * Delete a custom node
+   */
+  app.delete('/api/custom-nodes/:id', authMiddleware, (req, res) => {
+    try {
+      const id = getParam(req.params.id);
+      const existing = getCustomNodeById(id);
+
+      if (!existing) {
+        return res.status(404).json({ error: 'Custom node not found' });
+      }
+
+      if (existing.user_id !== req.userId) {
+        return res.status(403).json({ error: 'Not authorized' });
+      }
+
+      const deleted = deleteCustomNode(id);
+
+      auditService.log(AuditAction.WORKFLOW_DELETED, {
+        userId: req.userId,
+        req,
+        resourceType: 'custom_node',
+        resourceId: id,
+      });
+
+      res.json({ success: deleted });
+    } catch (error) {
+      console.error('DELETE /api/custom-nodes/:id error:', error);
+      res.status(500).json({ error: 'Failed to delete custom node' });
+    }
+  });
+
+  /**
+   * POST /api/custom-nodes/test
+   * Test-execute custom node code without saving
+   */
+  app.post('/api/custom-nodes/test', authMiddleware, async (req, res) => {
+    try {
+      const { code, testInputs, testConfig } = req.body;
+
+      if (!code) {
+        return res.status(400).json({ error: 'Code is required' });
+      }
+
+      const result = await testCustomNodeCode(
+        code,
+        testInputs || {},
+        testConfig || {}
+      );
+
+      res.json(result);
+    } catch (error) {
+      console.error('POST /api/custom-nodes/test error:', error);
+      const message =
+        error instanceof Error ? error.message : 'Test execution failed';
+      res.status(500).json({ error: message });
+    }
+  });
+
+  /**
+   * GET /api/custom-nodes/:id/versions
+   * Get version history for a custom node
+   */
+  app.get('/api/custom-nodes/:id/versions', authMiddleware, (req, res) => {
+    try {
+      const id = getParam(req.params.id);
+      const existing = getCustomNodeById(id);
+
+      if (!existing) {
+        return res.status(404).json({ error: 'Custom node not found' });
+      }
+
+      // Check access
+      if (existing.user_id !== req.userId && existing.is_public !== 1) {
+        return res.status(403).json({ error: 'Not authorized' });
+      }
+
+      const versions = getCustomNodeVersions(id);
+
+      res.json({
+        versions: versions.map((v) => ({
+          id: v.id,
+          version: v.version,
+          label: v.label,
+          changeNotes: v.change_notes,
+          createdAt: v.created_at,
+        })),
+      });
+    } catch (error) {
+      console.error('GET /api/custom-nodes/:id/versions error:', error);
+      res.status(500).json({ error: 'Failed to fetch versions' });
+    }
+  });
+
+  /**
+   * POST /api/custom-nodes/:id/restore/:version
+   * Restore a previous version of a custom node
+   */
+  app.post(
+    '/api/custom-nodes/:id/restore/:version',
+    authMiddleware,
+    async (req, res) => {
+      try {
+        const id = getParam(req.params.id);
+        const version = parseInt(getParam(req.params.version), 10);
+
+        const existing = getCustomNodeById(id);
+
+        if (!existing) {
+          return res.status(404).json({ error: 'Custom node not found' });
+        }
+
+        if (existing.user_id !== req.userId) {
+          return res.status(403).json({ error: 'Not authorized' });
+        }
+
+        const restored = restoreCustomNodeVersion(id, version);
+
+        if (!restored) {
+          return res.status(404).json({ error: 'Version not found' });
+        }
+
+        res.json(customNodeRowToApi(restored));
+      } catch (error) {
+        console.error('POST /api/custom-nodes/:id/restore error:', error);
+        res.status(500).json({ error: 'Failed to restore version' });
+      }
+    }
+  );
+
+  /**
+   * GET /api/custom-nodes/check-type/:type
+   * Check if a node type is available
+   */
+  app.get('/api/custom-nodes/check-type/:type', authMiddleware, (req, res) => {
+    try {
+      const type = getParam(req.params.type);
+      const available = isCustomNodeTypeAvailable(type);
+      res.json({ type, available });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to check type availability' });
     }
   });
 

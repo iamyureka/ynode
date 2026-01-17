@@ -25,10 +25,12 @@ import {
   Zap,
   LayoutDashboard,
   Plus,
+  Puzzle,
 } from 'lucide-react';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 import { cn } from '../../lib/utils';
+import { useCustomNodesStore } from '../../store/customNodesStore';
 
 export function WorkflowEditor() {
   const { workflowId: urlWorkflowId } = useParams<{ workflowId?: string }>();
@@ -343,6 +345,16 @@ export function WorkflowEditor() {
           >
             <Trash2 className="w-3.5 h-3.5 mr-1.5" />
             New
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => useCustomNodesStore.getState().openModal()}
+            className="text-zinc-400 hover:text-white h-8 text-xs hover:bg-purple-500/10"
+          >
+            <Puzzle className="w-3.5 h-3.5 mr-1.5" />
+            Node Assembler
           </Button>
 
           <Link to="/">
