@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useWorkflowDataStore } from '@/store/workflowDataStore';
 import { formatDistanceToNow } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 export function Workflows() {
   const { workflows, workflowsLoading, fetchAllWorkflows, deleteWorkflow } =
@@ -27,19 +28,19 @@ export function Workflows() {
   );
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white mb-2">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground mb-1">
             Workflows
           </h1>
-          <p className="text-zinc-400 font-light">
+          <p className="text-muted-foreground text-sm font-light">
             Manage and monitor your automation workflows.
           </p>
         </div>
         <Link
           to="/new-workflow"
-          className="group inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-medium transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+          className="group inline-flex items-center justify-center gap-2 px-4 py-2 rounded-sm bg-secondary hover:bg-secondary/90 text-white font-medium transition-all shadow-lg active:scale-95"
         >
           <Plus className="h-4 w-4" />
           <span>Create Workflow</span>
@@ -47,15 +48,14 @@ export function Workflows() {
       </div>
 
       <div className="relative group">
-        <div className="absolute -inset-0.5 bg-primary rounded-xl opacity-20 group-focus-within:opacity-50 blur transition duration-500" />
-        <div className="relative flex items-center bg-zinc-900/90 rounded-xl border border-white/10 p-1">
-          <Search className="h-5 w-5 text-zinc-500 ml-3 mr-2" />
+        <div className="relative flex items-center bg-sidebar rounded-lg border border-border p-0.5">
+          <Search className="h-4 w-4 text-muted-foreground ml-3 mr-2" />
           <input
             type="text"
-            placeholder="Search workflows by name or ID..."
+            placeholder="Search workflows..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-white placeholder-zinc-500 h-10 min-w-0"
+            className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-foreground placeholder:text-muted-foreground/40 h-8 text-sm min-w-0"
           />
         </div>
       </div>
@@ -65,19 +65,19 @@ export function Workflows() {
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className="h-48 rounded-2xl bg-zinc-900/40 border border-white/5 animate-pulse"
+              className="h-48 rounded-lg bg-sidebar border border-border animate-pulse"
             />
           ))}
         </div>
       ) : filteredWorkflows.length === 0 ? (
-        <div className="text-center py-20 rounded-3xl bg-zinc-900/20 border border-white/5 border-dashed">
-          <div className="h-20 w-20 bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner ring-1 ring-white/5">
-            <Workflow className="h-10 w-10 text-zinc-500" />
+        <div className="text-center py-20 rounded-lg bg-sidebar border border-border border-dashed">
+          <div className="h-16 w-16 bg-background rounded-lg flex items-center justify-center mx-auto mb-4 border border-border shadow-inner">
+            <Workflow className="h-8 w-8 text-muted-foreground/40" />
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">
+          <h3 className="text-lg font-semibold text-foreground mb-1">
             No workflows found
           </h3>
-          <p className="text-zinc-500 mb-8 max-w-md mx-auto">
+          <p className="text-muted-foreground text-sm mb-6 max-w-sm mx-auto">
             Get started by creating your first automation workflow.
           </p>
         </div>
@@ -86,23 +86,27 @@ export function Workflows() {
           {filteredWorkflows.map((workflow) => (
             <div
               key={workflow.id}
-              className="group relative flex flex-col p-6 rounded-2xl bg-zinc-900/40 border border-white/5 hover:border-white/10 hover:bg-zinc-900/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/50"
+              className="group relative flex flex-col p-5 rounded-lg bg-sidebar border border-border hover:border-primary/50 transition-all duration-300 shadow-sm"
             >
-              <div className="flex items-start justify-between mb-6">
+              <div className="flex items-start justify-between mb-4">
                 <div
-                  className={`p-3.5 rounded-xl border ${workflow.isActive
-                    ? 'bg-green-500/10 text-green-400 border-green-500/20 shadow-[0_0_15px_-3px_theme(colors.green.500/0.3)]'
-                    : 'bg-zinc-800/50 text-zinc-500 border-white/5'
-                    }`}
+                  className={cn(
+                    'p-3 rounded-lg border',
+                    workflow.isActive
+                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                      : 'bg-background text-muted-foreground border-border'
+                  )}
                 >
-                  <Workflow className="h-6 w-6" />
+                  <Workflow className="h-5 w-5" />
                 </div>
                 <div className="flex items-center gap-2">
                   <div
-                    className={`px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider border ${workflow.isActive
-                      ? 'bg-green-500/10 text-green-400 border-green-500/20'
-                      : 'bg-zinc-800/50 text-zinc-500 border-white/5'
-                      }`}
+                    className={cn(
+                      'px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border',
+                      workflow.isActive
+                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                        : 'bg-background text-muted-foreground border-border'
+                    )}
                   >
                     {workflow.isActive ? 'Active' : 'Inactive'}
                   </div>
@@ -118,25 +122,25 @@ export function Workflows() {
                         deleteWorkflow(workflow.id);
                       }
                     }}
-                    className="p-2 ml-2 text-zinc-600 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+                    className="p-1.5 ml-1 text-muted-foreground hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
                     title="Delete Workflow"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-3.5 w-3.5" />
                   </button>
                 </div>
               </div>
 
-              <div className="mb-6 flex-1">
-                <h3 className="text-lg font-bold text-white mb-1.5 group-hover:text-primary transition-colors line-clamp-1">
+              <div className="mb-4 flex-1">
+                <h3 className="text-base font-semibold text-foreground mb-1 group-hover:text-primary transition-colors line-clamp-1">
                   {workflow.name}
                 </h3>
-                <p className="text-xs text-zinc-500 font-mono truncate bg-white/5 rounded px-1.5 py-0.5 inline-block border border-white/5">
+                <p className="text-[10px] text-muted-foreground font-mono truncate bg-background px-1.5 py-0.5 inline-block border border-border rounded">
                   {workflow.id}
                 </p>
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-white/5 mt-auto">
-                <span className="text-xs text-zinc-500 flex items-center gap-1.5">
+              <div className="flex items-center justify-between pt-4 border-t border-border mt-auto">
+                <span className="text-[10px] text-muted-foreground flex items-center gap-1.5">
                   <Calendar className="h-3 w-3" />
                   {workflow.updatedAt
                     ? formatDistanceToNow(new Date(workflow.updatedAt), {
@@ -147,7 +151,7 @@ export function Workflows() {
 
                 <Link
                   to={`/editor/${workflow.id}`}
-                  className="flex items-center gap-1.5 text-xs font-medium text-zinc-300 hover:text-white transition-colors group/link"
+                  className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors group/link"
                 >
                   Edit Workflow
                   <ArrowRight className="h-3 w-3 group-hover/link:translate-x-0.5 transition-transform" />

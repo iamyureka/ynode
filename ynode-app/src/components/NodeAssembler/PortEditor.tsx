@@ -70,7 +70,7 @@ const PortItem = memo(function PortItem({
         PORT_TYPES.find((t) => t.value === port.type)?.color || '#FFFFFF';
 
     return (
-        <div className="flex items-center gap-1.5 p-1.5 rounded-lg bg-black/30 border border-white/5 group hover:border-white/10 transition-colors overflow-hidden">
+        <div className="flex items-center gap-1.5 p-1.5 rounded-lg bg-sidebar/30 border border-border/50 group hover:border-border transition-colors overflow-hidden">
             <GripVertical className="w-3 h-3 text-zinc-700 cursor-move opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
 
             <div
@@ -91,14 +91,14 @@ const PortItem = memo(function PortItem({
                 onKeyUp={(e) => e.stopPropagation()}
                 onKeyPress={(e) => e.stopPropagation()}
                 placeholder="Label"
-                className="flex-1 min-w-0 h-6 text-xs bg-transparent border-0 px-1.5 text-white placeholder:text-zinc-600 outline-none focus:outline-none"
+                className="flex-1 min-w-0 h-6 text-xs bg-transparent border-0 px-1.5 text-white placeholder:text-muted-foreground outline-none focus:outline-none"
             />
 
             <Select
                 value={port.type}
                 onValueChange={(value) => onUpdate(index, { type: value })}
             >
-                <SelectTrigger className="w-20 shrink-0 h-6 text-[10px] bg-black/40 border-white/10 px-2">
+                <SelectTrigger className="w-20 shrink-0 h-6 text-[10px] bg-sidebar/40 border-border px-2">
                     <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -127,9 +127,9 @@ const PortItem = memo(function PortItem({
                 />
                 <label
                     htmlFor={`req-${port.id}`}
-                    className="text-[9px] text-zinc-600 cursor-pointer"
+                    className="text-[9px] text-muted-foreground cursor-pointer"
                 >
-                    Req
+                    Required
                 </label>
             </div>
 
@@ -138,7 +138,7 @@ const PortItem = memo(function PortItem({
                 size="icon"
                 onClick={() => onRemove(index)}
                 disabled={!canDelete}
-                className="h-5 w-5 shrink-0 text-zinc-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-30"
+                className="h-5 w-5 shrink-0 text-muted-foreground hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-30"
             >
                 <Trash2 className="w-2.5 h-2.5" />
             </Button>
@@ -153,7 +153,7 @@ export function PortEditor({
     defaultType = 'any',
 }: PortEditorProps) {
     const addPort = useCallback(() => {
-        const id = `port_${Date.now()}`;
+        const id = `port_${Math.random().toString(36).slice(2, 6)}`;
         onChange([
             ...ports,
             { id, label: `New ${title.slice(0, -1)}`, type: defaultType },
@@ -201,7 +201,7 @@ export function PortEditor({
                     variant="ghost"
                     size="sm"
                     onClick={addPort}
-                    className="h-6 text-[10px] text-zinc-500 hover:text-white px-2"
+                    className="h-6 text-[10px] text-muted-foreground hover:text-white px-2"
                 >
                     <Plus className="w-3 h-3 mr-1" />
                     Add
@@ -223,3 +223,4 @@ export function PortEditor({
         </div>
     );
 }
+

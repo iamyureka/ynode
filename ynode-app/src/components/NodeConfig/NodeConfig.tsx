@@ -113,14 +113,14 @@ export const NodeConfig = () => {
 
   if (!selectedNode) {
     return (
-      <div className="w-80 border-l border-white/10 bg-background flex flex-col h-full">
-        <div className="p-4 border-b border-white/5 shrink-0">
+      <div className="w-80 border-l border-border bg-[#252526] flex flex-col h-full shadow-xl">
+        <div className="p-4 border-b border-border/50 shrink-0">
           <div className="flex items-center justify-between mb-3">
             {selectedCategory ? (
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleBack}
-                  className="p-1 -ml-1 rounded-md hover:bg-white/5 text-zinc-400 hover:text-white transition-colors"
+                  className="p-1 -ml-1 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </button>
@@ -133,7 +133,7 @@ export const NodeConfig = () => {
             ) : (
               <div>
                 <h2 className="text-sm font-semibold text-white">Add Nodes</h2>
-                <p className="text-[10px] text-zinc-500 mt-0.5">
+                <p className="text-[10px] text-muted-foreground mt-0.5">
                   Drag onto canvas or click to add
                 </p>
               </div>
@@ -141,13 +141,13 @@ export const NodeConfig = () => {
           </div>
 
           <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
             <input
               type="text"
               placeholder="Search nodes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-3 py-2 bg-zinc-800/50 border border-white/10 rounded-lg text-xs text-white placeholder:text-zinc-500 outline-none focus:border-primary/50 transition-all"
+              className="w-full pl-8 pr-3 py-2 bg-background border border-border rounded-md text-xs text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/50 transition-all"
             />
           </div>
         </div>
@@ -157,7 +157,7 @@ export const NodeConfig = () => {
             <div className="space-y-1">
               {filteredNodes.length === 0 ? (
                 <div className="py-8 text-center">
-                  <p className="text-zinc-500 text-xs">No nodes found</p>
+                  <p className="text-muted-foreground text-xs">No nodes found</p>
                 </div>
               ) : (
                 filteredNodes.map((node) => (
@@ -187,20 +187,20 @@ export const NodeConfig = () => {
                   <button
                     key={category}
                     onClick={() => setSelectedCategory(category)}
-                    className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-all group text-left"
+                    className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-secondary/50 transition-all group text-left"
                   >
-                    <div className="p-2 rounded-lg bg-white/5 text-zinc-400 group-hover:text-white group-hover:bg-white/10 transition-colors">
+                    <div className="p-2 rounded-md bg-background border border-border/40 text-muted-foreground group-hover:text-primary group-hover:border-primary/40 transition-colors">
                       <CategoryIcon className="w-4 h-4" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-white text-xs">
+                      <h3 className="font-medium text-foreground text-xs">
                         {meta.label}
                       </h3>
-                      <p className="text-[10px] text-zinc-500 mt-0.5 line-clamp-1">
+                      <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">
                         {meta.description}
                       </p>
                     </div>
-                    <ChevronRight className="w-3.5 h-3.5 text-zinc-600 group-hover:text-zinc-400 transition-colors" />
+                    <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/30 group-hover:text-muted-foreground transition-colors" />
                   </button>
                 );
               })}
@@ -235,8 +235,8 @@ export const NodeConfig = () => {
   };
 
   return (
-    <div className="w-80 border-l border-white/10 bg-background flex flex-col h-full">
-      <Card className="rounded-none border-0 border-b border-white/10 bg-transparent">
+    <div className="w-80 border-l border-border bg-sidebar flex flex-col h-full shadow-xl">
+      <Card className="rounded-none border-0 border-b border-border bg-sidebar">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <CardTitle className="text-lg">{selectedNode.data.label}</CardTitle>
@@ -262,7 +262,7 @@ export const NodeConfig = () => {
             onChange={(e) =>
               updateNodeData(selectedNode.id, { label: e.target.value })
             }
-            className="bg-white/5 border-white/10"
+            className="bg-background border-border"
           />
         </div>
 
@@ -326,10 +326,10 @@ export const NodeConfig = () => {
                       handleConfigChange('method', value)
                     }
                   >
-                    <SelectTrigger className="bg-white/5 border-white/10">
+                    <SelectTrigger className="bg-background border-border">
                       <SelectValue placeholder="Select Method" />
                     </SelectTrigger>
-                    <SelectContent className="bg-zinc-900 border-white/10">
+                    <SelectContent className="bg-sidebar border-border">
                       <SelectItem value="GET">GET</SelectItem>
                       <SelectItem value="POST">POST</SelectItem>
                       <SelectItem value="PUT">PUT</SelectItem>
@@ -347,11 +347,11 @@ export const NodeConfig = () => {
                     value={(config.url as string) || ''}
                     onChange={(e) => handleConfigChange('url', e.target.value)}
                     placeholder="https://api.example.com/endpoint"
-                    className="bg-white/5 border-white/10 font-mono text-xs"
+                    className="bg-background border-border font-mono text-xs"
                   />
                   <p className="text-[10px] text-muted-foreground">
                     Use{' '}
-                    <code className="bg-white/5 px-1 rounded">
+                    <code className="bg-secondary px-1 rounded">
                       {'{{data.field}}'}
                     </code>{' '}
                     for dynamic values
@@ -366,7 +366,7 @@ export const NodeConfig = () => {
                       handleConfigChange('headers', e.target.value)
                     }
                     placeholder='{\n  "Authorization": "Bearer token",\n  "X-Custom-Header": "value"\n}'
-                    className="w-full h-24 bg-white/5 border border-white/10 rounded-md p-2 font-mono text-xs text-white resize-none focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="w-full h-24 bg-background border border-border rounded-md p-2 font-mono text-xs text-foreground resize-none focus:outline-none focus:ring-1 focus:ring-ring outline-none focus:border-ring transition-all"
                   />
                 </div>
 
@@ -379,7 +379,7 @@ export const NodeConfig = () => {
                         handleConfigChange('queryParams', e.target.value)
                       }
                       placeholder='{\n  "page": 1,\n  "limit": 10\n}'
-                      className="w-full h-20 bg-white/5 border border-white/10 rounded-md p-2 font-mono text-xs text-white resize-none focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      className="w-full h-20 bg-background border border-border rounded-md p-2 font-mono text-xs text-foreground resize-none focus:outline-none focus:ring-1 focus:ring-ring outline-none focus:border-ring transition-all"
                     />
                   </div>
                 )}
@@ -396,10 +396,10 @@ export const NodeConfig = () => {
                           handleConfigChange('contentType', value)
                         }
                       >
-                        <SelectTrigger className="bg-white/5 border-white/10">
+                        <SelectTrigger className="bg-background border-border">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-zinc-900 border-white/10">
+                        <SelectContent className="bg-sidebar border-border">
                           <SelectItem value="application/json">
                             application/json
                           </SelectItem>
@@ -423,11 +423,11 @@ export const NodeConfig = () => {
                           handleConfigChange('body', e.target.value)
                         }
                         placeholder='{\n  "key": "value"\n}'
-                        className="w-full h-32 bg-white/5 border border-white/10 rounded-md p-2 font-mono text-xs text-white resize-none focus:outline-none focus:ring-2 focus:ring-primary/50"
+                        className="w-full h-32 bg-background border border-border rounded-md p-2 font-mono text-xs text-foreground resize-none focus:outline-none focus:ring-1 focus:ring-ring outline-none focus:border-ring transition-all"
                       />
                       <p className="text-[10px] text-muted-foreground">
                         Use{' '}
-                        <code className="bg-white/5 px-1 rounded">
+                        <code className="bg-secondary px-1 rounded">
                           {'{{data.field}}'}
                         </code>{' '}
                         to include data from previous nodes
@@ -444,10 +444,10 @@ export const NodeConfig = () => {
                       handleConfigChange('authType', value)
                     }
                   >
-                    <SelectTrigger className="bg-white/5 border-white/10">
+                    <SelectTrigger className="bg-background border-border">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-zinc-900 border-white/10">
+                    <SelectContent className="bg-sidebar border-border">
                       <SelectItem value="none">None</SelectItem>
                       <SelectItem value="bearer">Bearer Token</SelectItem>
                       <SelectItem value="basic">Basic Auth</SelectItem>
@@ -466,7 +466,7 @@ export const NodeConfig = () => {
                         handleConfigChange('bearerToken', e.target.value)
                       }
                       placeholder="your-api-token"
-                      className="bg-white/5 border-white/10 font-mono text-xs"
+                      className="bg-background border-border font-mono text-xs"
                     />
                   </div>
                 )}
@@ -481,7 +481,7 @@ export const NodeConfig = () => {
                           handleConfigChange('basicUsername', e.target.value)
                         }
                         placeholder="username"
-                        className="bg-white/5 border-white/10 text-xs"
+                        className="bg-background border-border text-xs"
                       />
                     </div>
                     <div className="space-y-2">
@@ -493,7 +493,7 @@ export const NodeConfig = () => {
                           handleConfigChange('basicPassword', e.target.value)
                         }
                         placeholder="password"
-                        className="bg-white/5 border-white/10 text-xs"
+                        className="bg-background border-border text-xs"
                       />
                     </div>
                   </>
@@ -509,7 +509,7 @@ export const NodeConfig = () => {
                           handleConfigChange('apiKeyName', e.target.value)
                         }
                         placeholder="X-API-Key"
-                        className="bg-white/5 border-white/10 text-xs"
+                        className="bg-background border-border text-xs"
                       />
                     </div>
                     <div className="space-y-2">
@@ -521,7 +521,7 @@ export const NodeConfig = () => {
                           handleConfigChange('apiKeyValue', e.target.value)
                         }
                         placeholder="your-api-key"
-                        className="bg-white/5 border-white/10 font-mono text-xs"
+                        className="bg-background border-border font-mono text-xs"
                       />
                     </div>
                     <div className="space-y-2">
@@ -532,10 +532,10 @@ export const NodeConfig = () => {
                           handleConfigChange('apiKeyLocation', value)
                         }
                       >
-                        <SelectTrigger className="bg-white/5 border-white/10">
+                        <SelectTrigger className="bg-background border-border">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-zinc-900 border-white/10">
+                        <SelectContent className="bg-sidebar border-border">
                           <SelectItem value="header">Header</SelectItem>
                           <SelectItem value="query">Query Parameter</SelectItem>
                         </SelectContent>
@@ -557,7 +557,7 @@ export const NodeConfig = () => {
                     }
                     min={1000}
                     max={120000}
-                    className="bg-white/5 border-white/10 font-mono text-xs outline-none"
+                    className="bg-background border-border font-mono text-xs outline-none"
                   />
                 </div>
 
@@ -565,7 +565,7 @@ export const NodeConfig = () => {
                   <summary className="text-xs font-medium text-muted-foreground cursor-pointer hover:text-white transition-colors">
                     Advanced Options
                   </summary>
-                  <div className="mt-3 space-y-4 pl-2 border-l border-white/10">
+                  <div className="mt-3 space-y-4 pl-2 border-l border-border">
                     <div className="space-y-2">
                       <Label className="text-xs">Follow Redirects</Label>
                       <Select
@@ -574,10 +574,10 @@ export const NodeConfig = () => {
                           handleConfigChange('followRedirects', value)
                         }
                       >
-                        <SelectTrigger className="bg-white/5 border-white/10 h-8 text-xs">
+                        <SelectTrigger className="bg-background border-border h-8 text-xs">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-zinc-900 border-white/10">
+                        <SelectContent className="bg-sidebar border-border">
                           <SelectItem value="true">Yes</SelectItem>
                           <SelectItem value="false">No</SelectItem>
                         </SelectContent>
@@ -591,10 +591,10 @@ export const NodeConfig = () => {
                           handleConfigChange('ignoreSSL', value)
                         }
                       >
-                        <SelectTrigger className="bg-white/5 border-white/10 h-8 text-xs">
+                        <SelectTrigger className="bg-background border-border h-8 text-xs">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-zinc-900 border-white/10">
+                        <SelectContent className="bg-sidebar border-border">
                           <SelectItem value="false">
                             No (Recommended)
                           </SelectItem>
@@ -610,10 +610,10 @@ export const NodeConfig = () => {
                           handleConfigChange('responseType', value)
                         }
                       >
-                        <SelectTrigger className="bg-white/5 border-white/10 h-8 text-xs">
+                        <SelectTrigger className="bg-background border-border h-8 text-xs">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-zinc-900 border-white/10">
+                        <SelectContent className="bg-sidebar border-border">
                           <SelectItem value="json">
                             JSON (Auto-parse)
                           </SelectItem>
@@ -635,10 +635,10 @@ export const NodeConfig = () => {
               value={(config.condition as string) || ''}
               onChange={(e) => handleConfigChange('condition', e.target.value)}
               placeholder="data.value > 10"
-              className="bg-white/5 border-white/10 font-mono text-xs"
+              className="bg-background border-border font-mono text-xs"
             />
             <p className="text-[10px] text-muted-foreground">
-              Returns true or false. Ex: <code>data.status === 200</code>
+              Returns true or false. Ex: <code className="bg-secondary px-1 rounded">data.status === 200</code>
             </p>
           </div>
         )}
@@ -652,10 +652,10 @@ export const NodeConfig = () => {
                 handleConfigChange('triggerType', value)
               }
             >
-              <SelectTrigger className="bg-white/5 border-white/10">
+              <SelectTrigger className="bg-background border-border">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-zinc-900 border-white/10">
+              <SelectContent className="bg-sidebar border-border">
                 <SelectItem value="manual">Manual</SelectItem>
                 <SelectItem value="scheduled" disabled>
                   Scheduled (Coming Soon)
@@ -702,25 +702,26 @@ function NodePaletteItem({ node, onDragStart, onClick }: NodePaletteItemProps) {
       draggable
       onDragStart={(e) => onDragStart(e, node.type)}
       onClick={onClick}
-      className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-white/5 cursor-grab active:cursor-grabbing transition-all group"
+      className="flex items-center gap-3 p-2.5 rounded-md hover:bg-secondary/50 cursor-grab active:cursor-grabbing transition-all group"
     >
       <div
         className={cn(
-          'p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors',
+          'p-2 rounded-md bg-background border border-border/40 group-hover:bg-secondary transition-colors',
           `text-${node.color}`
         )}
       >
         <node.icon className="w-4 h-4" />
       </div>
       <div className="flex-1 min-w-0">
-        <h3 className="font-medium text-white text-xs group-hover:text-primary transition-colors">
+        <h2 className="font-medium text-foreground text-xs group-hover:text-primary transition-colors">
           {node.label}
-        </h3>
-        <p className="text-[10px] text-zinc-500 mt-0.5 line-clamp-1">
+        </h2>
+        <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">
           {node.description}
         </p>
       </div>
-      <GripVertical className="w-3 h-3 text-zinc-600 group-hover:text-zinc-400 transition-colors" />
+      <GripVertical className="w-3 h-3 text-muted-foreground/30 group-hover:text-muted-foreground transition-colors" />
     </div>
   );
 }
+

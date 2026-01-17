@@ -4,31 +4,32 @@
 
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 5.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 5.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 100%;
-    --primary-foreground: 240 5% 96%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
+    --background: 240 2% 12%;
+    --foreground: 0 0% 80%;
+    --sidebar: 240 2% 15%;
+    --card: 240 2% 15%;
+    --card-foreground: 0 0% 90%;
+    --popover: 240 2% 15%;
+    --popover-foreground: 0 0% 90%;
+    --primary: 39 79% 51%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 2% 20%;
+    --secondary-foreground: 0 0% 90%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 240 2% 20%;
+    --muted-foreground: 240 2% 60%;
 
-    --accent: 0 0% 100%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 201 100% 40%;
+    --accent-foreground: 240 2% 96%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 0 0% 30%;
+    --border: 240 2% 20%;
+    --input: 240 2% 20%;
+    --ring: 39 79% 51%;
 
-    --radius: 0.75rem;
+    --radius: 0.9rem;
   }
 }
 
@@ -53,21 +54,23 @@
   select:-webkit-autofill:hover,
   select:-webkit-autofill:focus,
   select:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px #18181b inset !important;
-    -webkit-text-fill-color: #ffffff !important;
-    border-color: #27272a !important;
-    caret-color: #ffffff !important;
+    -webkit-box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
+    -webkit-text-fill-color: hsl(var(--foreground)) !important;
+    border-color: hsl(var(--border)) !important;
+    caret-color: hsl(var(--foreground)) !important;
     transition: background-color 5000s ease-in-out 0s;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-zinc-900/60 backdrop-blur-xl border border-white/5 shadow-2xl;
+    background-color: hsl(var(--background) / 0.6);
+    @apply backdrop-blur-md border border-border shadow-2xl;
   }
 
   .glass-card {
-    @apply bg-zinc-900/40 backdrop-blur-md border border-white/5 hover:border-white/10 transition-colors;
+    background-color: hsl(var(--sidebar) / 0.4);
+    @apply backdrop-blur-sm border border-border hover:border-white/10 transition-colors;
   }
 
   .text-gradient {
@@ -89,7 +92,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-zinc-800 rounded-full hover:bg-zinc-700 transition-colors;
+  @apply bg-border rounded-full hover:bg-zinc-700 transition-colors;
 }
 
 .react-flow__renderer {
@@ -97,7 +100,8 @@
 }
 
 .react-flow__controls {
-  @apply !bg-zinc-950/80 !border !border-white/10 !rounded-xl !overflow-hidden !shadow-2xl !p-1;
+  background-color: hsl(var(--sidebar) / 0.8) !important;
+  @apply !border !border-border !rounded-lg !overflow-hidden !shadow-2xl !p-1;
 }
 
 .react-flow__controls-button {
@@ -113,7 +117,8 @@
 }
 
 .react-flow__minimap {
-  @apply !bg-zinc-950/80 !backdrop-blur-md !border !border-white/10 !rounded-xl !shadow-2xl !overflow-hidden !m-4;
+  background-color: hsl(var(--sidebar) / 0.8) !important;
+  @apply !backdrop-blur-md !border !border-border !rounded-lg !shadow-2xl !overflow-hidden !m-4;
 }
 
 .react-flow__minimap-mask {

@@ -38,12 +38,12 @@ export function ExecutionPanel() {
   return (
     <div
       className={cn(
-        'absolute bottom-6 left-6 right-6 bg-black rounded-lg border border-white/10 flex flex-col overflow-hidden z-40 transition-all duration-300',
-        isExpanded ? 'h-64' : 'h-10'
+        'absolute bottom-6 left-6 right-6 bg-background rounded-lg border border-border flex flex-col justify-center overflow-hidden z-40 transition-all duration-300 shadow-black/40 bg-[#252526]',
+        isExpanded ? 'h-64' : 'h-12'
       )}
     >
       <div
-        className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5 cursor-pointer"
+        className="flex items-center justify-between px-4 py-2 border-b min-h-12 border-border bg-background cursor-pointer"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center gap-4">
@@ -55,20 +55,20 @@ export function ExecutionPanel() {
               if (!isExpanded) setIsExpanded(true);
             }}
             className={cn(
-              'flex items-center gap-2 text-xs font-mono transition-colors px-2 py-1 rounded',
+              'flex items-center gap-2 text-xs outline-none font-mono transition-colors px-2 py-1 rounded',
               activeTab === 'console'
-                ? 'text-primary bg-primary/10'
+                ? 'text-primary bg-primary/10 border border-primary/20'
                 : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
             )}
           >
             <Terminal className="w-4 h-4" />
-            <span>CONSOLE</span>
+            <span className="font-semibold tracking-tight">CONSOLE</span>
             {executionLogs.length > 0 && (
               <Badge
                 variant="secondary"
                 className={cn(
-                  'text-[10px] h-5',
-                  activeTab === 'console' ? 'bg-primary/20' : 'bg-white/10'
+                  'text-[10px] h-5 px-1.5 min-w-[20px] justify-center',
+                  activeTab === 'console' ? 'bg-primary/20 border border-primary/20' : 'bg-white/5'
                 )}
               >
                 {executionLogs.length}
@@ -86,12 +86,12 @@ export function ExecutionPanel() {
             className={cn(
               'flex items-center gap-2 text-xs font-mono transition-colors px-2 py-1 rounded',
               activeTab === 'memory'
-                ? 'text-purple-400 bg-purple-500/10'
+                ? 'text-purple-400 bg-purple-500/10 border border-purple-500/20'
                 : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
             )}
           >
             <Database className="w-4 h-4" />
-            <span>MEMORY</span>
+            <span className="font-semibold tracking-tight">MEMORY</span>
           </button>
 
           {isExecuting && (
@@ -112,66 +112,69 @@ export function ExecutionPanel() {
         </button>
       </div>
 
-      {isExpanded && (
-        <>
-          {activeTab === 'console' ? (
-            <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 font-mono text-xs space-y-2 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-              {executionLogs.length === 0 ? (
-                <div className="text-muted-foreground opacity-50 text-center py-4">
-                  No execution logs yet. Click "Run" on a Trigger node to start.
-                </div>
-              ) : (
-                executionLogs.map((log, index) => (
-                  <div
-                    key={`${log.id}-${index}`}
-                    className={`flex items-start gap-3 p-2 rounded border transition-colors ${log.status === 'success'
-                        ? 'bg-green-500/5 border-green-500/10 text-green-400'
-                        : log.status === 'error'
-                          ? 'bg-red-500/5 border-red-500/10 text-red-400'
-                          : 'bg-blue-500/5 border-blue-500/10 text-blue-400'
-                      }`}
-                  >
-                    <div className="mt-0.5">
-                      {log.status === 'success' ? (
-                        <Check className="w-3 h-3" />
-                      ) : log.status === 'error' ? (
-                        <XCircle className="w-3 h-3" />
-                      ) : (
-                        <Clock className="w-3 h-3" />
-                      )}
-                    </div>
-                    <div className="flex-1 flex flex-col gap-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold opacity-80">{log.nodeId}</span>
-                        <span className="opacity-50 text-[10px]">
-                          {new Date(log.timestamp).toLocaleTimeString()}
-                        </span>
-                      </div>
-                      <div className="opacity-90 whitespace-pre-wrap">
-                        {log.message}
-                      </div>
-                      {log.data ? (
-                        <pre className="mt-2 p-2 bg-black/50 rounded overflow-hidden text-[10px] opacity-70 border border-white/5 whitespace-pre-wrap break-all max-h-40 overflow-y-auto">
-                          {JSON.stringify(log.data, null, 2)}
-                        </pre>
-                      ) : null}
-                    </div>
+      <div
+        className={cn(
+          'flex-1 overflow-hidden transition-opacity duration-200',
+          isExpanded ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        )}
+      >
+        {activeTab === 'console' ? (
+          <div className="h-full bg-[#252526] overflow-y-auto overflow-x-hidden p-4 font-mono text-xs space-y-2 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+            {executionLogs.length === 0 ? (
+              <div className="text-muted-foreground opacity-50 text-center py-4">
+                No execution logs yet. Click "Run" on a Trigger node to start.
+              </div>
+            ) : (
+              executionLogs.map((log, index) => (
+                <div
+                  key={`${log.id}-${index}`}
+                  className={`flex items-start gap-3 p-2 rounded border transition-colors ${log.status === 'success'
+                    ? 'bg-green-500/10 border-green-500/20 text-green-400'
+                    : log.status === 'error'
+                      ? 'bg-red-500/10 border-red-500/20 text-red-400'
+                      : 'bg-blue-500/10 border-blue-500/20 text-blue-400'
+                    }`}
+                >
+                  <div className="mt-0.5">
+                    {log.status === 'success' ? (
+                      <Check className="w-3 h-3" />
+                    ) : log.status === 'error' ? (
+                      <XCircle className="w-3 h-3" />
+                    ) : (
+                      <Clock className="w-3 h-3" />
+                    )}
                   </div>
-                ))
-              )}
-              {isExecuting && (
-                <div className="flex items-center gap-2 p-2 text-primary animate-pulse">
-                  <Clock className="w-3 h-3" />
-                  <span>Processing...</span>
+                  <div className="flex-1 flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold opacity-80">{log.nodeId}</span>
+                      <span className="opacity-50 text-[10px]">
+                        {new Date(log.timestamp).toLocaleTimeString()}
+                      </span>
+                    </div>
+                    <div className="opacity-90 whitespace-pre-wrap">
+                      {log.message}
+                    </div>
+                    {log.data ? (
+                      <pre className="mt-2 p-2 bg-background rounded overflow-hidden text-[10px] opacity-70 border border-border whitespace-pre-wrap break-all max-h-40 overflow-y-auto">
+                        {JSON.stringify(log.data, null, 2)}
+                      </pre>
+                    ) : null}
+                  </div>
                 </div>
-              )}
-              <div ref={logsEndRef} />
-            </div>
-          ) : (
-            <MemoryTable className="flex-1" />
-          )}
-        </>
-      )}
+              ))
+            )}
+            {isExecuting && (
+              <div className="flex items-center gap-2 p-2 text-primary animate-pulse">
+                <Clock className="w-3 h-3" />
+                <span>Processing...</span>
+              </div>
+            )}
+            <div ref={logsEndRef} />
+          </div>
+        ) : (
+          <MemoryTable className="h-full" />
+        )}
+      </div>
     </div>
   );
 }

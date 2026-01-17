@@ -118,7 +118,7 @@ const colorMap: Record<
   default: {
     border: 'border-l-zinc-500',
     bg: 'bg-zinc-500/10',
-    text: 'text-zinc-400',
+    text: 'text-muted-foreground',
     ring: 'ring-zinc-500/50',
   },
 };
@@ -225,14 +225,14 @@ const NodeToolbar = ({ nodeId, selected }: NodeToolbarProps) => {
   return (
     <div
       className={cn(
-        'absolute -top-10 flex items-center gap-1 p-1 shadow-xl z-50 transition-opacity duration-150',
+        'absolute -top-10 flex items-center gap-1 p-1 z-50 transition-opacity duration-150',
         selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
       )}
       onMouseLeave={() => setShowMenu(false)}
     >
       <button
         onClick={handleDelete}
-        className="p-1.5 rounded-md text-zinc-400 hover:text-red-400 transition-colors"
+        className="p-1.5 rounded-md text-muted-foreground hover:text-red-400 transition-colors"
         title="Delete"
       >
         <Trash2 className="w-3.5 h-3.5" />
@@ -240,14 +240,14 @@ const NodeToolbar = ({ nodeId, selected }: NodeToolbarProps) => {
       <div className="relative">
         <button
           onClick={handleMenuClick}
-          className="p-1.5 rounded-md text-zinc-400 hover:text-white transition-colors"
+          className="p-1.5 rounded-md text-muted-foreground hover:text-white transition-colors"
           title="More options"
         >
           <MoreHorizontal className="w-3.5 h-3.5" />
         </button>
 
         {showMenu && (
-          <div className="absolute top-full right-0 mt-1 w-36 bg-zinc-900 rounded-lg shadow-xl overflow-hidden z-50">
+          <div className="absolute top-full right-0 mt-1 w-36 bg-background rounded-lg shadow-xl overflow-hidden z-50">
             <button
               onClick={handleCopy}
               className="w-full flex items-center gap-2 px-3 py-2 text-xs text-zinc-300 hover:bg-white/5 hover:text-white transition-colors"
@@ -381,7 +381,7 @@ export const GenericNode = memo(({ data, selected, id, type }: NodeProps) => {
                 {nodeDef.inputs.map((input) => (
                   <div
                     key={input.id}
-                    className="relative flex items-center h-7 bg-white/5 rounded-md border border-white/10 pl-3"
+                    className="relative flex items-center h-7 bg-white/5 rounded-md border border-border pl-3"
                   >
                     <span className="text-xs font-medium text-muted-foreground">
                       {input.label}
@@ -402,7 +402,7 @@ export const GenericNode = memo(({ data, selected, id, type }: NodeProps) => {
                         ),
                         borderColor: getTypeColor(input.type as PortDataType),
                       }}
-                      className="!w-3 !h-3 !border-2 !shadow-[0_0_6px_currentColor]"
+                      className="!w-3 !h-3 !border-2"
                     />
                   </div>
                 ))}
@@ -446,7 +446,7 @@ export const GenericNode = memo(({ data, selected, id, type }: NodeProps) => {
                 {nodeDef.outputs.map((output) => (
                   <div
                     key={output.id}
-                    className="relative flex items-center justify-end h-7 bg-white/5 rounded-md border border-white/10 pr-3"
+                    className="relative flex items-center justify-end h-7 bg-white/5 rounded-md border border-border pr-3"
                   >
                     <span className="text-xs font-medium text-muted-foreground">
                       {output.label}
@@ -464,7 +464,7 @@ export const GenericNode = memo(({ data, selected, id, type }: NodeProps) => {
                         ),
                         borderColor: getTypeColor(output.type as PortDataType),
                       }}
-                      className="!w-3 !h-3 !border-2 !shadow-[0_0_6px_currentColor]"
+                      className="!w-3 !h-3 !border-2"
                     />
                   </div>
                 ))}
@@ -478,3 +478,4 @@ export const GenericNode = memo(({ data, selected, id, type }: NodeProps) => {
 });
 
 GenericNode.displayName = 'GenericNode';
+

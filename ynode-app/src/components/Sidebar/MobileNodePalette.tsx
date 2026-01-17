@@ -61,20 +61,20 @@ export function MobileNodePalette({ isOpen, onClose }: MobileNodePaletteProps) {
   return (
     <>
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+        className="fixed inset-0 bg-sidebar/60 backdrop-blur-sm z-40"
         onClick={onClose}
       />
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-zinc-900 border-t border-white/10 rounded-t-3xl max-h-[70vh] flex flex-col animate-in slide-in-from-bottom duration-300">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-zinc-900 border-t border-border rounded-t-3xl max-h-[70vh] flex flex-col animate-in slide-in-from-bottom duration-300">
         <div className="flex justify-center py-3">
           <div className="w-10 h-1 bg-white/20 rounded-full" />
         </div>
 
-        <div className="flex items-center justify-between px-4 pb-4 border-b border-white/5">
+        <div className="flex items-center justify-between px-4 pb-4 border-b border-border/50">
           <h2 className="text-lg font-semibold text-white">Add Node</h2>
           <button
             onClick={onClose}
-            className="p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
+            className="p-2 text-muted-foreground hover:text-white rounded-lg hover:bg-white/10 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -92,7 +92,7 @@ export function MobileNodePalette({ isOpen, onClose }: MobileNodePaletteProps) {
 
             return (
               <div key={category} className="space-y-3">
-                <div className="flex items-center gap-2 text-xs font-semibold text-zinc-500 uppercase">
+                <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase">
                   <CategoryIcon className="w-3 h-3" />
                   {meta.label}
                 </div>
@@ -101,7 +101,7 @@ export function MobileNodePalette({ isOpen, onClose }: MobileNodePaletteProps) {
                     <button
                       key={node.type}
                       onClick={() => handleAddNode(node.type)}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-primary/30 transition-all active:scale-95"
+                      className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-border/50 hover:bg-white/10 hover:border-primary/30 transition-all active:scale-95"
                     >
                       <div
                         className={`p-2 rounded-lg bg-white/5 ${node.color}`}
@@ -124,3 +124,4 @@ export function MobileNodePalette({ isOpen, onClose }: MobileNodePaletteProps) {
     </>
   );
 }
+

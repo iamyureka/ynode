@@ -345,10 +345,10 @@ export function NodeAssembler() {
             />
 
             <div
-                className="relative w-[95vw] h-[90vh] max-w-[1600px] bg-zinc-950 rounded-xl border border-white/10 shadow-2xl flex flex-col overflow-hidden"
+                className="relative w-[95vw] h-[90vh] max-w-[1600px] bg-[#171717] rounded-xl shadow-2xl flex flex-col overflow-hidden"
                 onKeyDown={stopPropagation}
             >
-                <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10 bg-black/40 shrink-0">
+                <div className="flex items-center justify-between px-4 py-2.5 bg-background border-border border-b shrink-0">
                     <div className="flex items-center gap-3">
                         <div>
                             <h2 className="text-sm font-semibold text-white">
@@ -419,7 +419,7 @@ export function NodeAssembler() {
                 )}
 
                 <div className="flex-1 flex overflow-hidden">
-                    <div className="w-64 border-r border-white/10 flex flex-col overflow-hidden shrink-0">
+                    <div className="w-84 border-r border-white/10 flex flex-col overflow-hidden shrink-0">
                         <div className="p-3 space-y-2.5 border-b border-white/10">
                             <div>
                                 <label className="text-[10px] text-zinc-500 uppercase mb-0.5 block">
@@ -567,7 +567,7 @@ export function NodeAssembler() {
                             <label
                                 className="text-[10px] text-zinc-500 cursor-pointer"
                             >
-                                v0.0.1-alpha
+                                Node Assembler v0.0.1-alpha
                             </label>
                         </div>
                     </div>
@@ -581,13 +581,8 @@ export function NodeAssembler() {
                         />
                     </div>
 
-                    <div className="w-56 border-l border-white/10 flex flex-col overflow-hidden shrink-0">
-                        <div
-                            className={cn(
-                                'border-b border-white/10 transition-all',
-                                showTestPanel ? 'h-[50%]' : 'flex-1'
-                            )}
-                        >
+                    <div className="w-96 border-l border-white/10 flex flex-col overflow-hidden shrink-0">
+                        <div className={cn('overflow-hidden', showTestPanel ? 'h-[50%]' : 'flex-1')}>
                             <MemoizedPreview
                                 label={label}
                                 icon={icon}
@@ -601,8 +596,8 @@ export function NodeAssembler() {
                         </div>
 
                         {showTestPanel && (
-                            <div className="flex-1 overflow-hidden flex flex-col">
-                                <div className="px-3 py-1.5 border-b border-white/5 flex items-center justify-between shrink-0 bg-black/20">
+                            <div className="flex-1 flex flex-col overflow-hidden border-t border-white/10">
+                                <div className="px-3 py-1.5 flex items-center justify-between shrink-0 bg-black/20">
                                     <span className="text-[10px] text-zinc-500 font-medium uppercase">
                                         Test Results
                                     </span>
@@ -613,16 +608,17 @@ export function NodeAssembler() {
                                         Hide
                                     </button>
                                 </div>
-                                <div className="flex-1 overflow-y-auto p-2">
+                                <div className="flex-1 overflow-y-auto p-2 min-h-0">
                                     {isTesting ? (
-                                        <div className="flex items-center justify-center h-full">
+                                        <div className="flex items-center justify-center h-full gap-2">
                                             <Loader2 className="w-4 h-4 animate-spin text-zinc-500" />
+                                            <span className="text-[10px] text-zinc-500">Running...</span>
                                         </div>
                                     ) : testResult ? (
                                         <div className="space-y-2">
                                             <div
                                                 className={cn(
-                                                    'px-2 py-1 rounded text-[10px]',
+                                                    'px-2 py-1.5 rounded text-[10px]',
                                                     testResult.success
                                                         ? 'bg-green-500/10 text-green-400'
                                                         : 'bg-red-500/10 text-red-400'

@@ -108,7 +108,7 @@ export const CommentNode = memo(({ id, data, selected }: NodeProps) => {
         minHeight={80}
         isVisible={selected}
         lineClassName="!border-white/20"
-        handleClassName="!w-2.5 !h-2.5 !bg-background !border-2 !border-white/50 !rounded-sm"
+        handleClassName="!w-2.5 !h-2.5 !bg-background !border-2 !border-border/500 !rounded-sm"
         onResize={handleResize}
       />
       <div
@@ -124,7 +124,7 @@ export const CommentNode = memo(({ id, data, selected }: NodeProps) => {
           <textarea
             ref={textareaRef}
             className={cn(
-              'w-full h-full p-4 bg-transparent outline-none text-sm font-medium leading-relaxed transition-all placeholder:text-zinc-500',
+              'w-full h-full p-4 bg-transparent outline-none text-sm font-medium leading-relaxed transition-all placeholder:text-muted-foreground',
               colorConfig.text,
               !isEditing && 'cursor-default resize-none overflow-hidden'
             )}
@@ -171,3 +171,4 @@ export const CommentNode = memo(({ id, data, selected }: NodeProps) => {
 });
 
 CommentNode.displayName = 'CommentNode';
+

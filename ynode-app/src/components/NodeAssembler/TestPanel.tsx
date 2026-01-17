@@ -12,8 +12,8 @@ interface TestPanelProps {
 
 export function TestPanel({ inputs, result, onRunTest, isTesting }: TestPanelProps) {
     return (
-        <div className="h-full flex flex-col bg-[#0d0d0d]">
-            <div className="px-4 py-3 border-b border-white/5 bg-black/40 flex items-center justify-between">
+        <div className="h-full flex flex-col bg-[#171717]">
+            <div className="px-4 py-3 border-b border-border/50 bg-sidebar/40 flex items-center justify-between">
                 <span className="text-sm font-medium text-zinc-300">Test Execution</span>
                 <Button
                     size="sm"
@@ -34,25 +34,25 @@ export function TestPanel({ inputs, result, onRunTest, isTesting }: TestPanelPro
                 {!result ? (
                     <div className="h-full flex flex-col items-center justify-center text-center">
                         <div className="w-16 h-16 rounded-full bg-zinc-900 flex items-center justify-center mb-4">
-                            <Play className="w-8 h-8 text-zinc-600" />
+                            <Play className="w-8 h-8 text-muted-foreground" />
                         </div>
-                        <h3 className="text-lg font-medium text-zinc-400 mb-2">
+                        <h3 className="text-lg font-medium text-muted-foreground mb-2">
                             No test results yet
                         </h3>
-                        <p className="text-sm text-zinc-600 max-w-md">
+                        <p className="text-sm text-muted-foreground max-w-md">
                             Click "Run Test" to execute your code with sample input values.
                             Inputs will be populated with default values based on their types.
                         </p>
                         {inputs.length > 0 && (
                             <div className="mt-6 text-left w-full max-w-md">
-                                <h4 className="text-xs text-zinc-500 uppercase mb-2">
+                                <h4 className="text-xs text-muted-foreground uppercase mb-2">
                                     Test inputs will be:
                                 </h4>
                                 <div className="space-y-1 font-mono text-xs">
                                     {inputs.map((input) => (
-                                        <div key={input.id} className="text-zinc-500">
-                                            <span className="text-zinc-400">{input.id}</span>:{' '}
-                                            <span className="text-zinc-600">
+                                        <div key={input.id} className="text-muted-foreground">
+                                            <span className="text-muted-foreground">{input.id}</span>:{' '}
+                                            <span className="text-muted-foreground">
                                                 {getDefaultValueString(input.type)}
                                             </span>
                                         </div>
@@ -93,8 +93,8 @@ export function TestPanel({ inputs, result, onRunTest, isTesting }: TestPanelPro
 
                         {result.success && Object.keys(result.outputs).length > 0 && (
                             <div>
-                                <h4 className="text-xs text-zinc-500 uppercase mb-2">Outputs</h4>
-                                <pre className="p-4 rounded-lg bg-black/60 border border-white/5 text-sm text-zinc-300 overflow-x-auto font-mono">
+                                <h4 className="text-xs text-muted-foreground uppercase mb-2">Outputs</h4>
+                                <pre className="p-4 rounded-lg bg-sidebar/60 border border-border/50 text-sm text-zinc-300 overflow-x-auto font-mono">
                                     {JSON.stringify(result.outputs, null, 2)}
                                 </pre>
                             </div>
@@ -102,14 +102,14 @@ export function TestPanel({ inputs, result, onRunTest, isTesting }: TestPanelPro
 
                         {result.logs.length > 0 && (
                             <div>
-                                <h4 className="text-xs text-zinc-500 uppercase mb-2">
+                                <h4 className="text-xs text-muted-foreground uppercase mb-2">
                                     Console Output ({result.logs.length})
                                 </h4>
-                                <div className="rounded-lg bg-black/60 border border-white/5 overflow-hidden">
+                                <div className="rounded-lg bg-sidebar/60 border border-border/50 overflow-hidden">
                                     {result.logs.map((log, i) => (
                                         <div
                                             key={i}
-                                            className="px-4 py-2 border-b border-white/5 last:border-0 font-mono text-xs text-zinc-400"
+                                            className="px-4 py-2 border-b border-border/50 last:border-0 font-mono text-xs text-muted-foreground"
                                         >
                                             {log}
                                         </div>
@@ -140,3 +140,4 @@ function getDefaultValueString(type: string): string {
             return 'null';
     }
 }
+

@@ -25,24 +25,26 @@ export function AppLayout() {
   ];
 
   return (
-    <div className="h-screen bg-black text-foreground flex overflow-hidden selection:bg-primary/20 font-sans">
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[120px]" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-violet-600/5 blur-[120px]" />
-      </div>
-
+    <div className="h-screen bg-background text-foreground flex overflow-hidden selection:bg-primary/20 font-sans">
+      {/* Desktop Sidebar */}
       {!isInEditor && (
-        <aside className="hidden lg:flex w-64 flex-col border-r border-white/[0.08] bg-black/60 backdrop-blur-xl h-full flex-shrink-0 z-40">
-          <div className="p-6 pb-4 border-b border-white/[0.06]">
-            <NavLink to="/" className="flex items-center gap-3 group">
-              <img src="/ynode_white.svg" alt="yNode" className="h-8 w-auto" />
+        <aside className="hidden lg:flex w-16 hover:w-56 group/sidebar flex-col border-r border-border bg-sidebar h-full flex-shrink-0 z-40 transition-all duration-300 overflow-hidden">
+          {/* Logo */}
+          <div className="h-16 flex items-center px-4 border-b border-border shrink-0">
+            <NavLink to="/" className="flex items-center gap-3">
+              <img
+                src="/ynode_white_orange.svg"
+                alt="ynode"
+                className="h-8 w-8 shrink-0"
+              />
+              <span className="text-lg font-semibold text-white whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200">
+                y<span className="text-primary">node</span>
+              </span>
             </NavLink>
           </div>
 
-          <nav className="px-3 py-4 space-y-1 flex-1">
-            <div className="px-2 mb-2 text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">
-              Navigation
-            </div>
+          {/* Navigation */}
+          <nav className="flex-1 py-4 px-2 space-y-1">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
@@ -50,55 +52,61 @@ export function AppLayout() {
                 end={item.to === '/'}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200 group relative',
+                    'flex items-center gap-3 h-10 px-3 rounded-md transition-all duration-150 relative group/item',
                     isActive
-                      ? 'bg-white/[0.08] text-white'
-                      : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.04]'
+                      ? 'bg-primary/10 text-white'
+                      : 'text-zinc-500 hover:text-white hover:bg-white/5'
                   )
                 }
               >
                 {({ isActive }) => (
                   <>
-                    <div className="flex items-center gap-2.5">
-                      <item.icon
-                        className={cn(
-                          'h-4 w-4 transition-colors',
-                          isActive
-                            ? 'text-primary'
-                            : 'text-zinc-500 group-hover:text-zinc-400'
-                        )}
-                      />
-                      <span className="font-medium text-sm">{item.label}</span>
-                    </div>
                     {isActive && (
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_8px_theme(colors.primary.DEFAULT)]" />
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary rounded-r" />
                     )}
+                    <item.icon
+                      className={cn(
+                        'h-5 w-5 shrink-0 transition-colors',
+                        isActive ? 'text-primary' : ''
+                      )}
+                    />
+                    <span className="text-sm font-medium whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200">
+                      {item.label}
+                    </span>
                   </>
                 )}
               </NavLink>
             ))}
           </nav>
 
-          <div className="p-3 border-t border-white/[0.08] bg-black/20 flex-shrink-0">
+          {/* Footer */}
+          <div className="p-2 border-t border-border shrink-0">
             <button
               onClick={logout}
-              className="flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-500/5 transition-all group text-sm font-medium"
+              className="flex items-center gap-3 w-full h-10 px-3 rounded-md text-zinc-500 hover:text-red-400 hover:bg-red-500/5 transition-all group/item"
             >
-              <LogOut className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
-              <span>Sign Out</span>
+              <LogOut className="h-5 w-5 shrink-0" />
+              <span className="text-sm font-medium whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200">
+                Sign Out
+              </span>
             </button>
           </div>
         </aside>
       )}
 
+      {/* Mobile Header */}
       {!isInEditor && (
-        <div className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-black/80 backdrop-blur-xl border-b border-white/[0.08] z-40 flex items-center justify-center px-4">
-          <div className="flex items-center gap-2">
-            <img src="/ynode_white.svg" alt="yNode" className="h-8 w-auto" />
-          </div>
-        </div>
+        <header className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-sidebar/95 backdrop-blur-md border-b border-border z-50 flex items-center justify-center px-4">
+          <NavLink to="/" className="flex items-center gap-2">
+            <img src="/ynode_white_orange.svg" alt="ynode" className="h-7 w-auto" />
+            <span className="text-lg font-semibold text-white">
+              y<span className="text-primary">node</span>
+            </span>
+          </NavLink>
+        </header>
       )}
 
+      {/* Main Content */}
       <main
         className={cn(
           'flex-1 relative z-10',
@@ -116,8 +124,9 @@ export function AppLayout() {
         )}
       </main>
 
+      {/* Mobile Bottom Nav */}
       {!isInEditor && (
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-black/90 backdrop-blur-xl border-t border-white/[0.08] z-40 flex items-center justify-around px-2 safe-area-inset-bottom">
+        <nav className="lg:hidden fixed bottom-4 left-4 right-4 h-14 bg-sidebar/95 backdrop-blur-md border border-border rounded-2xl z-50 flex items-center justify-around px-1 shadow-xl shadow-black/20">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -125,22 +134,16 @@ export function AppLayout() {
               end={item.to === '/'}
               className={({ isActive }) =>
                 cn(
-                  'flex flex-col items-center justify-center gap-1 py-2 px-3 rounded-xl transition-colors min-w-[60px]',
+                  'flex flex-col items-center justify-center gap-0.5 py-1.5 px-4 rounded-xl transition-all',
                   isActive
-                    ? 'text-primary'
-                    : 'text-zinc-500 active:text-zinc-300'
+                    ? 'text-primary bg-primary/10'
+                    : 'text-zinc-500 active:text-zinc-300 active:bg-white/5'
                 )
               }
             >
               {({ isActive }) => (
                 <>
-                  <item.icon
-                    className={cn(
-                      'h-5 w-5',
-                      isActive &&
-                        'drop-shadow-[0_0_8px_theme(colors.primary.DEFAULT)]'
-                    )}
-                  />
+                  <item.icon className={cn('h-5 w-5', isActive && 'drop-shadow-[0_0_6px_theme(colors.primary.DEFAULT)]')} />
                   <span className="text-[10px] font-medium">{item.label}</span>
                 </>
               )}
@@ -148,7 +151,7 @@ export function AppLayout() {
           ))}
           <button
             onClick={logout}
-            className="flex flex-col items-center justify-center gap-1 py-2 px-3 rounded-xl text-zinc-500 active:text-red-400 transition-colors min-w-[60px]"
+            className="flex flex-col items-center justify-center gap-0.5 py-1.5 px-4 rounded-xl text-zinc-500 active:text-red-400 active:bg-red-500/10 transition-all"
           >
             <LogOut className="h-5 w-5" />
             <span className="text-[10px] font-medium">Logout</span>

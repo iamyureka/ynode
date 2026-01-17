@@ -77,130 +77,131 @@ export function NodePreview({
     const hasMultipleOutputs = outputs.length > 1;
 
     return (
-        <div className="flex flex-col items-center justify-center h-full p-4 bg-[#0d0d0d]">
-            <div className="text-[10px] text-zinc-600 uppercase tracking-wider mb-4">
+        <div className="flex flex-col h-full bg-[#171717] overflow-hidden">
+            <div className="text-[10px] text-muted-foreground uppercase tracking-wider p-4 pb-2 text-center shrink-0">
                 Live Preview
             </div>
 
-            <div className="relative">
-                <div
-                    className={cn(
-                        'min-w-[180px] max-w-[220px] rounded-xl border-2 border-white/10 bg-card text-card-foreground shadow-lg',
-                        'border-l-4',
-                        colors.border
-                    )}
-                >
-                    {hasMultipleInputs && (
-                        <div className="flex flex-col gap-2 px-3 pt-3">
-                            {inputs.map((input) => (
-                                <div
-                                    key={input.id}
-                                    className="relative flex items-center h-7 bg-white/5 rounded-md border border-white/10 pl-3"
-                                >
-                                    <span className="text-xs font-medium text-muted-foreground">
-                                        {input.label}
-                                        {input.required && (
-                                            <span className="text-red-400 ml-0.5">*</span>
-                                        )}
-                                    </span>
-                                    <div
-                                        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2"
-                                        style={{
-                                            backgroundColor: getTypeColor(
-                                                input.type as PortDataType
-                                            ),
-                                            borderColor: getTypeColor(input.type as PortDataType),
-                                            boxShadow: `0 0 6px ${getTypeColor(input.type as PortDataType)}`,
-                                        }}
-                                    />
+            <div className="flex-1 overflow-y-auto px-4 pb-4 min-h-0">
+                <div className="flex flex-col items-center justify-start py-4">
+                    <div className="relative">
+                        <div
+                            className={cn(
+                                'min-w-[180px] max-w-[220px] rounded-xl border-2 border-border bg-card text-card-foreground shadow-lg',
+                                'border-l-4',
+                                colors.border
+                            )}
+                        >
+                            {hasMultipleInputs && (
+                                <div className="flex flex-col gap-2 px-3 pt-3">
+                                    {inputs.map((input) => (
+                                        <div
+                                            key={input.id}
+                                            className="relative flex items-center h-7 bg-white/5 rounded-md border border-border pl-3"
+                                        >
+                                            <span className="text-xs font-medium text-muted-foreground truncate max-w-[140px]">
+                                                {input.label}
+                                                {input.required && (
+                                                    <span className="text-red-400 ml-0.5">*</span>
+                                                )}
+                                            </span>
+                                            <div
+                                                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2"
+                                                style={{
+                                                    backgroundColor: getTypeColor(
+                                                        input.type as PortDataType
+                                                    ),
+                                                    borderColor: getTypeColor(input.type as PortDataType),
+                                                }}
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
-                        </div>
-                    )}
+                            )}
 
-                    <div className="p-3 space-y-2">
-                        <div className="flex items-center gap-3">
-                            <div className={cn('p-2 rounded-md', colors.bg, colors.text)}>
-                                <IconComponent className="w-4 h-4" />
-                            </div>
-                            <span className="font-semibold text-sm text-white">
-                                {label || 'Custom Node'}
-                            </span>
-                        </div>
+                            <div className="p-3 space-y-2">
+                                <div className="flex items-center gap-3">
+                                    <div className={cn('p-2 rounded-md', colors.bg, colors.text)}>
+                                        <IconComponent className="w-4 h-4" />
+                                    </div>
+                                    <span className="font-semibold text-sm text-white truncate max-w-[140px]">
+                                        {label || 'Custom Node'}
+                                    </span>
+                                </div>
 
-                        {(usesMemory || usesWorkflowMemory || requiresNetwork) && (
-                            <div className="flex gap-1 flex-wrap">
-                                {usesMemory && (
-                                    <span className="text-[8px] px-1.5 py-0.5 bg-amber-500/20 text-amber-400 rounded font-medium">
-                                        MEM
-                                    </span>
-                                )}
-                                {usesWorkflowMemory && (
-                                    <span className="text-[8px] px-1.5 py-0.5 bg-blue-500/20 text-blue-400 rounded font-medium">
-                                        WF
-                                    </span>
-                                )}
-                                {requiresNetwork && (
-                                    <span className="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded font-medium">
-                                        NET
-                                    </span>
+                                {(usesMemory || usesWorkflowMemory || requiresNetwork) && (
+                                    <div className="flex gap-1 flex-wrap">
+                                        {usesMemory && (
+                                            <span className="text-[8px] px-1.5 py-0.5 bg-amber-500/20 text-amber-400 rounded font-medium">
+                                                MEM
+                                            </span>
+                                        )}
+                                        {usesWorkflowMemory && (
+                                            <span className="text-[8px] px-1.5 py-0.5 bg-blue-500/20 text-blue-400 rounded font-medium">
+                                                WF
+                                            </span>
+                                        )}
+                                        {requiresNetwork && (
+                                            <span className="text-[8px] px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded font-medium">
+                                                NET
+                                            </span>
+                                        )}
+                                    </div>
                                 )}
                             </div>
-                        )}
+
+                            {hasMultipleOutputs && (
+                                <div className="flex flex-col gap-2 px-3 pb-3">
+                                    {outputs.map((output) => (
+                                        <div
+                                            key={output.id}
+                                            className="relative flex items-center justify-end h-7 bg-white/5 rounded-md border border-border pr-3"
+                                        >
+                                            <span className="text-xs font-medium text-muted-foreground truncate max-w-[140px]">
+                                                {output.label}
+                                            </span>
+                                            <div
+                                                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-3 h-3 rounded-full border-2"
+                                                style={{
+                                                    backgroundColor: getTypeColor(
+                                                        output.type as PortDataType
+                                                    ),
+                                                    borderColor: getTypeColor(output.type as PortDataType),
+                                                }}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {!hasMultipleInputs && inputs.length === 1 && (
+                                <div
+                                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2"
+                                    style={{
+                                        backgroundColor: getTypeColor(inputs[0].type as PortDataType),
+                                        borderColor: getTypeColor(inputs[0].type as PortDataType),
+                                    }}
+                                />
+                            )}
+
+                            {!hasMultipleOutputs && outputs.length === 1 && (
+                                <div
+                                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-3 h-3 rounded-full border-2"
+                                    style={{
+                                        backgroundColor: getTypeColor(outputs[0].type as PortDataType),
+                                        borderColor: getTypeColor(outputs[0].type as PortDataType),
+                                    }}
+                                />
+                            )}
+                        </div>
                     </div>
 
-                    {hasMultipleOutputs && (
-                        <div className="flex flex-col gap-2 px-3 pb-3">
-                            {outputs.map((output) => (
-                                <div
-                                    key={output.id}
-                                    className="relative flex items-center justify-end h-7 bg-white/5 rounded-md border border-white/10 pr-3"
-                                >
-                                    <span className="text-xs font-medium text-muted-foreground">
-                                        {output.label}
-                                    </span>
-                                    <div
-                                        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-3 h-3 rounded-full border-2"
-                                        style={{
-                                            backgroundColor: getTypeColor(
-                                                output.type as PortDataType
-                                            ),
-                                            borderColor: getTypeColor(output.type as PortDataType),
-                                            boxShadow: `0 0 6px ${getTypeColor(output.type as PortDataType)}`,
-                                        }}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
-                    {!hasMultipleInputs && inputs.length === 1 && (
-                        <div
-                            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full border-2"
-                            style={{
-                                backgroundColor: getTypeColor(inputs[0].type as PortDataType),
-                                borderColor: getTypeColor(inputs[0].type as PortDataType),
-                                boxShadow: `0 0 6px ${getTypeColor(inputs[0].type as PortDataType)}`,
-                            }}
-                        />
-                    )}
-
-                    {!hasMultipleOutputs && outputs.length === 1 && (
-                        <div
-                            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-3 h-3 rounded-full border-2"
-                            style={{
-                                backgroundColor: getTypeColor(outputs[0].type as PortDataType),
-                                borderColor: getTypeColor(outputs[0].type as PortDataType),
-                                boxShadow: `0 0 6px ${getTypeColor(outputs[0].type as PortDataType)}`,
-                            }}
-                        />
-                    )}
+                    <div className="mt-4 text-[9px] text-muted-foreground text-center max-w-[180px]">
+                        This preview shows how your node will appear on the canvas
+                    </div>
                 </div>
-            </div>
-
-            <div className="mt-4 text-[9px] text-zinc-600 text-center max-w-[180px]">
-                This preview shows how your node will appear on the canvas
             </div>
         </div>
     );
 }
+

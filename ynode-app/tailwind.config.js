@@ -23,11 +23,12 @@ export default {
         mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
+        border: '#2b2b2b',
+        input: '#2b2b2b',
+        ring: '#e5a01f',
+        background: '#1e1e1e',
+        foreground: '#cccccc',
+        sidebar: '#252526',
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',

@@ -26,6 +26,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Card } from '../ui/card';
+import { cn } from '../../lib/utils';
 import { useNodeTypesStore } from '../../store/nodeTypesStore';
 
 const iconMap: Record<string, LucideIcon> = {
@@ -77,14 +78,14 @@ export function Sidebar() {
   const categoryKeys = Object.keys(categories);
 
   return (
-    <aside className="w-64 border-r border-white/5 bg-background p-2 flex flex-col gap-4 z-20">
-      <div className="flex items-center gap-2 px-2 pb-4 border-b border-white/5">
-        <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+    <aside className="w-64 border-r border-border bg-sidebar p-2 flex flex-col gap-4 z-20">
+      <div className="flex items-center gap-2 px-2 pb-4 border-b border-border">
+        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
           Node Palette
         </span>
       </div>
 
-      <div className="flex pl-1 pr-3 flex-col gap-3 overflow-y-auto flex-1">
+      <div className="flex pl-1 pr-3 flex-col gap-3 overflow-y-auto flex-1 scrollbar-thin">
         {categoryKeys.map((category) => {
           const categoryNodes = nodeTypes.filter(
             (n) => n.category === category
@@ -96,8 +97,8 @@ export function Sidebar() {
           const CategoryIcon = iconMap[meta.icon] || Zap;
 
           return (
-            <div key={category} className="space-y-2">
-              <div className="flex items-center gap-2 px-2 text-xs font-semibold text-muted-foreground uppercase">
+            <div key={category} className="space-y-1.5">
+              <div className="flex items-center gap-2 px-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2 opacity-60">
                 <CategoryIcon className="w-3 h-3" />
                 {meta.label}
               </div>
@@ -109,19 +110,20 @@ export function Sidebar() {
                   className="group relative"
                   title={node.description}
                 >
-                  <Card className="p-3 flex items-center gap-3 cursor-grab active:cursor-grabbing hover:border-primary/50 hover:bg-white/5 transition-all duration-300 group-hover:translate-x-0.5 group-hover:shadow-[0_0_15px_rgba(99,102,241,0.15)] bg-black/20 border-white/5">
+                  <Card className="p-2.5 flex items-center gap-3 cursor-grab active:cursor-grabbing hover:border-primary/50 hover:bg-secondary/30 transition-all duration-200 bg-background border-border shadow-sm">
                     <div
-                      className={`p-2 rounded-md bg-white/5 ring-1 ring-white/10 group-hover:scale-110 transition-transform duration-300 ${node.color}`}
+                      className={cn(
+                        'p-1.5 rounded bg-sidebar border border-border group-hover:border-primary/30 transition-all',
+                        node.color
+                      )}
                     >
-                      <node.icon className="w-4 h-4" />
+                      <node.icon className="w-3.5 h-3.5" />
                     </div>
-                    <span className="text-sm font-medium text-gray-200 group-hover:text-white transition-colors">
+                    <span className="text-xs font-medium text-foreground group-hover:text-primary transition-colors">
                       {node.label}
                     </span>
-                    <GripVertical className="ml-auto w-4 h-4 text-muted-foreground/30 group-hover:text-muted-foreground/60" />
+                    <GripVertical className="ml-auto w-3.5 h-3.5 text-muted-foreground/20 group-hover:text-muted-foreground/50 transition-colors" />
                   </Card>
-
-                  <div className="absolute inset-0 -z-10 bg-gradient-to-r from-primary/20 to-transparent opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500 rounded-lg" />
                 </div>
               ))}
             </div>
@@ -131,3 +133,4 @@ export function Sidebar() {
     </aside>
   );
 }
+

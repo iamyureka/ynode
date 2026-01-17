@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Trash2, Key, Shield, X } from 'lucide-react';
+import { Plus, Trash2, Key, Shield, X, Loader2 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
@@ -83,19 +83,19 @@ export default function CredentialsPage() {
   }
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-8">
+    <div className="p-6 max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-white">Credentials</h1>
-          <p className="text-sm text-zinc-500 mt-1">
+          <h1 className="text-2xl font-semibold text-foreground tracking-tight">Credentials</h1>
+          <p className="text-sm text-muted-foreground font-light mt-1">
             Store API keys for your integrations
           </p>
         </div>
         {!isCreating && (
           <Button
             onClick={() => setIsCreating(true)}
-            className="bg-white text-black hover:bg-zinc-200 font-medium"
+            className="bg-secondary text-white hover:bg-secondary/90 font-medium active:scale-95"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Credential
@@ -105,66 +105,64 @@ export default function CredentialsPage() {
 
       {/* Create Form */}
       {isCreating && (
-        <div className="bg-zinc-900/80 border border-white/10 rounded-xl p-6">
+        <div className="bg-sidebar border border-border rounded-lg p-5 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-medium text-white">New Credential</h2>
+            <h2 className="text-sm font-semibold text-foreground">New Credential</h2>
             <button
               onClick={() => {
                 setIsCreating(false);
                 setError('');
               }}
-              className="text-zinc-500 hover:text-white transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
 
           <form onSubmit={handleCreate} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className="text-zinc-400">Name</Label>
+              <div className="space-y-1.5">
+                <Label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Name</Label>
                 <Input
                   placeholder="e.g., My OpenRouter Key"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="bg-zinc-800 border-white/10"
+                  className="bg-background border-border h-9"
                 />
               </div>
-              <div className="space-y-2">
-                <Label className="text-zinc-400">Type</Label>
+              <div className="space-y-1.5">
+                <Label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Type</Label>
                 <Input
-                  placeholder="e.g., openrouter, openai, telegram"
+                  placeholder="e.g., openrouter, openai"
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="bg-zinc-800 border-white/10"
+                  className="bg-background border-border h-9"
                 />
-                <p className="text-[10px] text-zinc-600">
-                  Match this with what your nodes expect
-                </p>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-zinc-400">API Key / Token</Label>
+            <div className="space-y-1.5">
+              <Label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">API Key / Token</Label>
               <Input
                 type="password"
-                placeholder="sk-... or your secret token"
+                placeholder="sk-..."
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
-                className="bg-zinc-800 border-white/10 font-mono"
+                className="bg-background border-border font-mono h-9"
               />
             </div>
 
             {error && (
-              <p className="text-red-400 text-sm bg-red-400/10 px-3 py-2 rounded-lg">
+              <p className="text-destructive text-xs bg-destructive/10 px-3 py-2 rounded border border-destructive/20">
                 {error}
               </p>
             )}
 
-            <div className="flex justify-end gap-3 pt-2">
+            <div className="flex justify-end gap-2.5 pt-2">
               <Button
                 type="button"
                 variant="ghost"
+                className="h-9 px-4 text-xs"
                 onClick={() => {
                   setIsCreating(false);
                   setError('');
@@ -175,7 +173,7 @@ export default function CredentialsPage() {
               <Button
                 type="submit"
                 disabled={saving}
-                className="bg-white text-black hover:bg-zinc-200 font-medium"
+                className="bg-secondary text-white hover:bg-secondary/90 font-medium h-9 px-4 text-xs active:scale-95"
               >
                 {saving ? 'Saving...' : 'Save Credential'}
               </Button>
@@ -185,16 +183,19 @@ export default function CredentialsPage() {
       )}
 
       {/* Credentials List */}
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {loading && (
-          <div className="text-center py-12 text-zinc-500">Loading...</div>
+          <div className="text-center py-12 text-muted-foreground text-sm flex flex-col items-center gap-2">
+            <Loader2 className="h-5 w-5 animate-spin" />
+            Loading...
+          </div>
         )}
 
         {!loading && credentials.length === 0 && !isCreating && (
-          <div className="text-center py-16 border border-dashed border-white/10 rounded-xl">
-            <Shield className="w-10 h-10 mx-auto text-zinc-700 mb-3" />
-            <h3 className="text-white font-medium">No credentials yet</h3>
-            <p className="text-zinc-500 text-sm mt-1">
+          <div className="text-center py-16 border border-dashed border-border rounded-lg bg-sidebar/30">
+            <Shield className="w-10 h-10 mx-auto text-muted-foreground/20 mb-3" />
+            <h3 className="text-foreground font-medium text-sm">No credentials yet</h3>
+            <p className="text-muted-foreground text-xs mt-1">
               Add API keys for OpenAI, Telegram, OpenRouter, etc.
             </p>
           </div>
@@ -203,19 +204,19 @@ export default function CredentialsPage() {
         {credentials.map((cred) => (
           <div
             key={cred.id}
-            className="flex items-center justify-between p-4 bg-zinc-900/50 border border-white/5 rounded-lg hover:border-white/10 transition-colors group"
+            className="flex items-center justify-between p-3.5 bg-sidebar border border-border rounded-lg hover:border-primary/50 transition-all group"
           >
             <div className="flex items-center gap-4">
-              <div className="p-2.5 rounded-lg bg-white/5 text-zinc-400">
+              <div className="p-2 rounded bg-background text-muted-foreground border border-border/50">
                 <Key className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="font-medium text-white">{cred.name}</h3>
+                <h3 className="text-sm font-semibold text-foreground">{cred.name}</h3>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-xs px-2 py-0.5 rounded bg-white/5 text-zinc-400 font-mono">
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-background text-muted-foreground font-mono border border-border/50 uppercase tracking-widest">
                     {cred.type}
                   </span>
-                  <span className="text-xs text-zinc-600">
+                  <span className="text-[10px] text-muted-foreground">
                     Added {new Date(cred.created_at).toLocaleDateString()}
                   </span>
                 </div>
@@ -224,10 +225,10 @@ export default function CredentialsPage() {
             <Button
               variant="ghost"
               size="icon"
-              className="opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-red-400 hover:bg-red-400/10 transition-all"
+              className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all h-8 w-8"
               onClick={() => handleDelete(cred.id)}
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="w-3.5 h-3.5" />
             </Button>
           </div>
         ))}

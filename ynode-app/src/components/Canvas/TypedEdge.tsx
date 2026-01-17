@@ -38,7 +38,7 @@ const EdgeToolbar = memo(
                     }}
                 >
                     <div
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-zinc-900/95 backdrop-blur-sm  shadow-xl"
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#252526]/95 backdrop-blur-sm  shadow-xl"
                         style={{
                             pointerEvents: 'auto',
                             display: 'flex',

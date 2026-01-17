@@ -206,7 +206,7 @@ export function DynamicConfigPanel({
 
   if (fields.length === 0) {
     return (
-      <div className="text-center py-6 text-zinc-500 text-xs">
+      <div className="text-center py-6 text-muted-foreground opacity-50 text-xs">
         No configuration options available
       </div>
     );
@@ -273,7 +273,7 @@ function FieldRenderer({ field, value, onChange, config }: FieldRendererProps) {
             value={(value as string) || ''}
             onChange={(e) => onChange(e.target.value)}
             placeholder={field.placeholder}
-            className="bg-white/5 border-white/10"
+            className="bg-background border-border"
           />
           {field.description && (
             <p className="text-[10px] text-muted-foreground">
@@ -296,7 +296,7 @@ function FieldRenderer({ field, value, onChange, config }: FieldRendererProps) {
             onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
             min={field.min}
             max={field.max}
-            className="bg-white/5 border-white/10 font-mono text-xs"
+            className="bg-background border-border font-mono text-xs"
           />
           {(field.min !== undefined || field.max !== undefined) && (
             <p className="text-[10px] text-muted-foreground">
@@ -319,10 +319,10 @@ function FieldRenderer({ field, value, onChange, config }: FieldRendererProps) {
             value={String(value ?? field.default ?? false)}
             onValueChange={(v) => onChange(v === 'true')}
           >
-            <SelectTrigger className="bg-white/5 border-white/10">
+            <SelectTrigger className="bg-background border-border">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-zinc-900 border-white/10">
+            <SelectContent className="bg-sidebar border-border">
               <SelectItem value="true">Yes</SelectItem>
               <SelectItem value="false">No</SelectItem>
             </SelectContent>
@@ -346,12 +346,12 @@ function FieldRenderer({ field, value, onChange, config }: FieldRendererProps) {
             }
             onValueChange={onChange}
           >
-            <SelectTrigger className="bg-white/5 border-white/10">
+            <SelectTrigger className="bg-background border-border">
               <SelectValue
                 placeholder={`Select ${field.label.toLowerCase()}`}
               />
             </SelectTrigger>
-            <SelectContent className="bg-zinc-900 border-white/10">
+            <SelectContent className="bg-sidebar border-border">
               {field.enumValues?.map((option) => (
                 <SelectItem key={option} value={option}>
                   {option}
@@ -390,7 +390,7 @@ function FieldRenderer({ field, value, onChange, config }: FieldRendererProps) {
               }
             }}
             placeholder={field.type === 'array' ? '[\n  \n]' : '{\n  \n}'}
-            className="w-full h-24 bg-white/5 border border-white/10 rounded-md p-2 font-mono text-xs text-white resize-none focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="w-full h-24 bg-background border border-border rounded-md p-2 font-mono text-xs text-foreground resize-none focus:outline-none focus:ring-1 focus:ring-ring outline-none focus:border-ring transition-all"
           />
           {field.description && (
             <p className="text-[10px] text-muted-foreground">
@@ -410,7 +410,7 @@ function FieldRenderer({ field, value, onChange, config }: FieldRendererProps) {
           <Input
             value={String(value ?? '')}
             onChange={(e) => onChange(e.target.value)}
-            className="bg-white/5 border-white/10"
+            className="bg-background border-border"
           />
         </div>
       );
@@ -445,14 +445,14 @@ function CredentialPicker({
         {required && <span className="text-red-400 ml-1">*</span>}
       </Label>
       <Select value={value || ''} onValueChange={(v) => onChange(v)}>
-        <SelectTrigger className="bg-white/5 border-white/10">
+        <SelectTrigger className="bg-background border-border">
           <SelectValue
             placeholder={loading ? 'Loading...' : 'Select credential'}
           />
         </SelectTrigger>
-        <SelectContent className="bg-zinc-900 border-white/10">
+        <SelectContent className="bg-sidebar border-border">
           {credentials.length === 0 && !loading && (
-            <div className="px-2 py-1.5 text-xs text-zinc-500">
+            <div className="px-2 py-1.5 text-xs text-muted-foreground opacity-60">
               No credentials found. Add one in Settings.
             </div>
           )}
@@ -460,7 +460,7 @@ function CredentialPicker({
             <SelectItem key={cred.id} value={cred.id}>
               <span className="flex items-center gap-2">
                 <span>{cred.name}</span>
-                <span className="text-xs text-zinc-500">({cred.type})</span>
+                <span className="text-xs text-muted-foreground opacity-50">({cred.type})</span>
               </span>
             </SelectItem>
           ))}

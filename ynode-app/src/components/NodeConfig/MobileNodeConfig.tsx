@@ -42,10 +42,10 @@ export function MobileNodeConfig() {
 
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col">
-      <div className="flex items-center justify-between px-4 h-14 border-b border-white/5 shrink-0">
+      <div className="flex items-center justify-between px-4 h-14 border-b border-border/50 shrink-0">
         <button
           onClick={handleClose}
-          className="p-2 -ml-2 text-zinc-400 hover:text-white transition-colors"
+          className="p-2 -ml-2 text-muted-foreground hover:text-white transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
@@ -68,8 +68,8 @@ export function MobileNodeConfig() {
       </div>
 
       {definition && (
-        <div className="px-4 py-3 border-b border-white/5 bg-white/[0.02]">
-          <p className="text-sm text-zinc-400">{definition.description}</p>
+        <div className="px-4 py-3 border-b border-border/50 bg-white/[0.02]">
+          <p className="text-sm text-muted-foreground">{definition.description}</p>
         </div>
       )}
 
@@ -81,7 +81,7 @@ export function MobileNodeConfig() {
             onChange={(e) =>
               updateNodeData(selectedNode.id, { label: e.target.value })
             }
-            className="bg-white/5 border-white/10 h-12 text-base"
+            className="bg-white/5 border-border h-12 text-base"
           />
         </div>
 
@@ -145,10 +145,10 @@ export function MobileNodeConfig() {
                       handleConfigChange('method', value)
                     }
                   >
-                    <SelectTrigger className="bg-white/5 border-white/10 h-12 text-base">
+                    <SelectTrigger className="bg-white/5 border-border h-12 text-base">
                       <SelectValue placeholder="Select Method" />
                     </SelectTrigger>
-                    <SelectContent className="bg-zinc-900 border-white/10">
+                    <SelectContent className="bg-zinc-900 border-border">
                       <SelectItem value="GET">GET</SelectItem>
                       <SelectItem value="POST">POST</SelectItem>
                       <SelectItem value="PUT">PUT</SelectItem>
@@ -166,7 +166,7 @@ export function MobileNodeConfig() {
                     value={(config.url as string) || ''}
                     onChange={(e) => handleConfigChange('url', e.target.value)}
                     placeholder="https://api.example.com/endpoint"
-                    className="bg-white/5 border-white/10 font-mono text-sm h-12"
+                    className="bg-white/5 border-border font-mono text-sm h-12"
                   />
                 </div>
 
@@ -178,7 +178,7 @@ export function MobileNodeConfig() {
                       handleConfigChange('headers', e.target.value)
                     }
                     placeholder='{"Authorization": "Bearer token"}'
-                    className="w-full h-28 bg-white/5 border border-white/10 rounded-md p-3 font-mono text-sm text-white resize-none focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="w-full h-28 bg-white/5 border border-border rounded-md p-3 font-mono text-sm text-white resize-none focus:outline-none focus:ring-2 focus:ring-primary/50"
                   />
                 </div>
 
@@ -191,7 +191,7 @@ export function MobileNodeConfig() {
                         handleConfigChange('queryParams', e.target.value)
                       }
                       placeholder='{"page": 1, "limit": 10}'
-                      className="w-full h-24 bg-white/5 border border-white/10 rounded-md p-3 font-mono text-sm text-white resize-none focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      className="w-full h-24 bg-white/5 border border-border rounded-md p-3 font-mono text-sm text-white resize-none focus:outline-none focus:ring-2 focus:ring-primary/50"
                     />
                   </div>
                 )}
@@ -208,10 +208,10 @@ export function MobileNodeConfig() {
                           handleConfigChange('contentType', value)
                         }
                       >
-                        <SelectTrigger className="bg-white/5 border-white/10 h-12">
+                        <SelectTrigger className="bg-white/5 border-border h-12">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-zinc-900 border-white/10">
+                        <SelectContent className="bg-zinc-900 border-border">
                           <SelectItem value="application/json">
                             application/json
                           </SelectItem>
@@ -234,7 +234,7 @@ export function MobileNodeConfig() {
                           handleConfigChange('body', e.target.value)
                         }
                         placeholder='{"key": "value"}'
-                        className="w-full h-36 bg-white/5 border border-white/10 rounded-md p-3 font-mono text-sm text-white resize-none focus:outline-none focus:ring-2 focus:ring-primary/50"
+                        className="w-full h-36 bg-white/5 border border-border rounded-md p-3 font-mono text-sm text-white resize-none focus:outline-none focus:ring-2 focus:ring-primary/50"
                       />
                     </div>
                   </>
@@ -248,10 +248,10 @@ export function MobileNodeConfig() {
                       handleConfigChange('authType', value)
                     }
                   >
-                    <SelectTrigger className="bg-white/5 border-white/10 h-12">
+                    <SelectTrigger className="bg-white/5 border-border h-12">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-zinc-900 border-white/10">
+                    <SelectContent className="bg-zinc-900 border-border">
                       <SelectItem value="none">None</SelectItem>
                       <SelectItem value="bearer">Bearer Token</SelectItem>
                       <SelectItem value="basic">Basic Auth</SelectItem>
@@ -270,7 +270,7 @@ export function MobileNodeConfig() {
                         handleConfigChange('bearerToken', e.target.value)
                       }
                       placeholder="your-api-token"
-                      className="bg-white/5 border-white/10 font-mono text-sm h-12"
+                      className="bg-white/5 border-border font-mono text-sm h-12"
                     />
                   </div>
                 )}
@@ -285,7 +285,7 @@ export function MobileNodeConfig() {
                           handleConfigChange('basicUsername', e.target.value)
                         }
                         placeholder="username"
-                        className="bg-white/5 border-white/10 h-12"
+                        className="bg-white/5 border-border h-12"
                       />
                     </div>
                     <div className="space-y-2">
@@ -297,7 +297,7 @@ export function MobileNodeConfig() {
                           handleConfigChange('basicPassword', e.target.value)
                         }
                         placeholder="password"
-                        className="bg-white/5 border-white/10 h-12"
+                        className="bg-white/5 border-border h-12"
                       />
                     </div>
                   </>
@@ -313,7 +313,7 @@ export function MobileNodeConfig() {
                           handleConfigChange('apiKeyName', e.target.value)
                         }
                         placeholder="X-API-Key"
-                        className="bg-white/5 border-white/10 h-12"
+                        className="bg-white/5 border-border h-12"
                       />
                     </div>
                     <div className="space-y-2">
@@ -325,7 +325,7 @@ export function MobileNodeConfig() {
                           handleConfigChange('apiKeyValue', e.target.value)
                         }
                         placeholder="your-api-key"
-                        className="bg-white/5 border-white/10 font-mono h-12"
+                        className="bg-white/5 border-border font-mono h-12"
                       />
                     </div>
                     <div className="space-y-2">
@@ -336,10 +336,10 @@ export function MobileNodeConfig() {
                           handleConfigChange('apiKeyLocation', value)
                         }
                       >
-                        <SelectTrigger className="bg-white/5 border-white/10 h-12">
+                        <SelectTrigger className="bg-white/5 border-border h-12">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-zinc-900 border-white/10">
+                        <SelectContent className="bg-zinc-900 border-border">
                           <SelectItem value="header">Header</SelectItem>
                           <SelectItem value="query">Query Parameter</SelectItem>
                         </SelectContent>
@@ -361,7 +361,7 @@ export function MobileNodeConfig() {
                     }
                     min={1000}
                     max={120000}
-                    className="bg-white/5 outline-none border-white/10 font-mono text-sm h-12"
+                    className="bg-white/5 outline-none border-border font-mono text-sm h-12"
                   />
                 </div>
               </>
@@ -375,7 +375,7 @@ export function MobileNodeConfig() {
               value={(config.condition as string) || ''}
               onChange={(e) => handleConfigChange('condition', e.target.value)}
               placeholder="data.value > 10"
-              className="bg-white/5 border-white/10 font-mono text-sm h-12"
+              className="bg-white/5 border-border font-mono text-sm h-12"
             />
             <p className="text-xs text-muted-foreground">
               Returns true or false. Ex:{' '}
@@ -395,10 +395,10 @@ export function MobileNodeConfig() {
                 handleConfigChange('triggerType', value)
               }
             >
-              <SelectTrigger className="bg-white/5 border-white/10 h-12 text-base">
+              <SelectTrigger className="bg-white/5 border-border h-12 text-base">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-zinc-900 border-white/10">
+              <SelectContent className="bg-zinc-900 border-border">
                 <SelectItem value="manual">Manual</SelectItem>
                 <SelectItem value="scheduled" disabled>
                   Scheduled (Coming Soon)
@@ -415,7 +415,7 @@ export function MobileNodeConfig() {
         )}
       </div>
 
-      <div className="p-4 border-t border-white/5 shrink-0">
+      <div className="p-4 border-t border-border/50 shrink-0">
         <button
           onClick={handleClose}
           className="w-full py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-xl transition-colors active:scale-[0.98]"
@@ -426,3 +426,4 @@ export function MobileNodeConfig() {
     </div>
   );
 }
+

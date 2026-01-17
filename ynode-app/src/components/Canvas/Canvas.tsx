@@ -120,7 +120,7 @@ function CanvasInner() {
     return {
       ...edge,
       animated: false,
-      style: { stroke: 'rgba(255, 255, 255, 0.4)', strokeWidth: 2 },
+      style: { stroke: 'hsl(var(--muted-foreground) / 0.4)', strokeWidth: 2 },
     };
   });
 
@@ -240,7 +240,7 @@ function CanvasInner() {
 
   return (
     <div
-      className="flex-1 h-full bg-zinc-950/12 outline-none"
+      className="flex-1 h-full outline-none bg-black/30"
       ref={reactFlowWrapper}
       tabIndex={0}
     >
@@ -273,10 +273,10 @@ function CanvasInner() {
         selectNodesOnDrag={false}
       >
         <Background
-          color="#ffffff8c"
-          gap={20}
+          color="#fff"
+          gap={10}
           size={1}
-          className="opacity-70"
+          className="opacity-[0.35]"
         />
         <Controls position="top-left" />
 
@@ -288,7 +288,7 @@ function CanvasInner() {
               clearExecutionStates();
               clearExecutionLogs();
             }}
-            className="bg-background/80 backdrop-blur-sm border-white/10 hover:bg-white/10 gap-2"
+            className="bg-background/80 backdrop-blur-sm border-border hover:bg-white/10 gap-2"
             title="Reset execution states and clear logs"
           >
             <RefreshCw className="w-4 h-4" />
@@ -310,3 +310,4 @@ export function Canvas() {
     </ReactFlowProvider>
   );
 }
+

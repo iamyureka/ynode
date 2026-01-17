@@ -31,7 +31,7 @@ const ConstellationBackground = () => {
 
     useEffect(() => {
         const img = new Image();
-        img.src = '/ynode_white.svg';
+        img.src = '/ynode_white_orange.svg';
         logoRef.current = img;
 
         const canvas = canvasRef.current;
@@ -94,7 +94,7 @@ const ConstellationBackground = () => {
 
         const draw = () => {
             t += 0.012;
-            ctx.fillStyle = '#000';
+            ctx.fillStyle = '#171717';
             ctx.fillRect(0, 0, width, height);
 
             const vignette = ctx.createRadialGradient(
@@ -331,12 +331,12 @@ export function AuthScreen() {
     };
 
     return (
-        <div className="flex h-screen w-screen bg-black overflow-hidden font-sans relative">
+        <div className="flex h-screen w-screen bg-sidebar overflow-hidden font-sans relative">
             <a
                 href="https://github.com/iamyureka/ynode"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="absolute top-8 right-8 z-[100] flex items-center gap-2.5 pl-3 pr-4 py-2 rounded-xl border border-zinc-800 bg-black/50 hover:bg-zinc-900/50 hover:border-zinc-700 transition-all duration-300 group"
+                className="absolute top-8 right-8 z-[100] flex items-center gap-2.5 pl-3 pr-4 py-2 rounded-xl border border-border bg-sidebar/50 hover:bg-secondary/50 hover:border-border transition-all duration-300 group"
             >
                 <div className="flex items-center gap-2">
                     <Github className="w-5 h-5 text-white" />
@@ -351,18 +351,18 @@ export function AuthScreen() {
             <div className="hidden lg:flex flex-1 relative overflow-hidden">
                 <ConstellationBackground />
 
-                <div className="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-black via-black/80 to-transparent z-10" />
+                <div className="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-b from-transparent via-primary/ to-secondary/50 z-10" />
                 <div className="absolute bottom-0 inset-x-0 p-10 z-20 text-center">
                     <h1 className="text-4xl font-light tracking-tight text-white mb-2">
-                        y<span className="font-semibold">node</span>
+                        y<span className="font-semibold text-primary">node</span>
                     </h1>
-                    <p className="text-zinc-500 text-base max-w-sm mx-auto leading-relaxed">
+                    <p className="text-muted-foreground text-base max-w-sm mx-auto leading-relaxed">
                         For Free, yeah! because ynode?
                     </p>
                 </div>
             </div>
 
-            <div className="w-full lg:w-[480px] xl:w-[520px] flex flex-col justify-center px-8 sm:px-12 lg:px-16 bg-black border-l  relative">
+            <div className="w-full lg:w-[480px] xl:w-[520px] flex flex-col justify-center px-8 sm:px-12 lg:px-16 bg-background border-l border-border relative">
                 <div className="absolute top-0 right-0 w-96 h-96 bg-white/[0.02] rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
                 <div className="w-full max-w-sm mx-auto relative z-10">
@@ -370,7 +370,7 @@ export function AuthScreen() {
                         <h2 className="text-2xl font-medium text-white tracking-tight mb-2">
                             {mode === 'login' ? 'Welcome back' : 'Create account'}
                         </h2>
-                        <p className="text-zinc-500 text-sm">
+                        <p className="text-muted-foreground text-sm">
                             {mode === 'login'
                                 ? 'Sign in to continue to your workspace'
                                 : 'Start building workflows today'}
@@ -389,7 +389,7 @@ export function AuthScreen() {
                             <label
                                 className={cn(
                                     'text-xs font-medium uppercase tracking-wider transition-colors duration-200',
-                                    focusedField === 'email' ? 'text-white' : 'text-zinc-600'
+                                    focusedField === 'email' ? 'text-foreground' : 'text-muted-foreground/60'
                                 )}
                             >
                                 Email
@@ -408,7 +408,7 @@ export function AuthScreen() {
                                     onFocus={() => setFocusedField('email')}
                                     onBlur={() => setFocusedField(null)}
                                     required
-                                    className="h-12 text-white placeholder:text-zinc-700 rounded-lg focus:border-white/10 transition-all"
+                                    className="h-12 text-white placeholder:text-zinc-700 rounded-lg focus:border-border transition-all"
                                 />
                             </div>
                         </div>
@@ -418,7 +418,7 @@ export function AuthScreen() {
                                 <label
                                     className={cn(
                                         'text-xs font-medium uppercase tracking-wider transition-colors duration-200',
-                                        focusedField === 'password' ? 'text-white' : 'text-zinc-600'
+                                        focusedField === 'password' ? 'text-white' : 'text-muted-foreground'
                                     )}
                                 >
                                     Password
@@ -427,7 +427,7 @@ export function AuthScreen() {
                                     <button
                                         type="button"
                                         onMouseEnter={handleJoke}
-                                        className="text-xs text-zinc-600 hover:text-zinc-400 transition-colors"
+                                        className="text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                                     >
                                         {PASS_JOKES[jokeIndex]}
                                     </button>
@@ -448,7 +448,7 @@ export function AuthScreen() {
                                     onBlur={() => setFocusedField(null)}
                                     required
                                     minLength={6}
-                                    className="h-12 text-white placeholder:text-zinc-700 rounded-lg focus:border-white/10 transition-all"
+                                    className="h-12 text-white placeholder:text-zinc-700 rounded-lg focus:border-border transition-all"
                                 />
                             </div>
                         </div>
@@ -462,16 +462,16 @@ export function AuthScreen() {
                                     className={cn(
                                         'w-4 h-4 rounded border flex items-center justify-center transition-all duration-200',
                                         agreed
-                                            ? 'bg-white border-white'
-                                            : 'border-zinc-700 group-hover:border-zinc-500'
+                                            ? 'bg-primary border-primary'
+                                            : 'border-border group-hover:border-muted-foreground/40'
                                     )}
                                 >
                                     {agreed && (
-                                        <Check className="w-2.5 h-2.5 text-black" strokeWidth={3} />
+                                        <Check className="w-2.5 h-2.5 text-primary-foreground" strokeWidth={3} />
                                     )}
                                 </div>
-                                <span className="text-sm text-zinc-500 group-hover:text-zinc-400 transition-colors select-none">
-                                    I agree{' '}
+                                <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors select-none">
+                                    I agree to the terms
                                 </span>
                             </div>
                         )}
@@ -481,7 +481,7 @@ export function AuthScreen() {
                             disabled={isLoading || (mode === 'register' && !agreed)}
                             className={cn(
                                 'w-full h-12 mt-2 rounded-lg font-medium text-sm transition-all duration-300 relative overflow-hidden group',
-                                'bg-white text-black hover:bg-zinc-200',
+                                'bg-primary text-primary-foreground hover:bg-primary/90',
                                 'disabled:opacity-40 disabled:cursor-not-allowed'
                             )}
                         >
@@ -499,12 +499,12 @@ export function AuthScreen() {
                     </form>
 
                     <div className="mt-10 text-center">
-                        <p className="text-zinc-600 text-sm">
+                        <p className="text-muted-foreground/60 text-sm">
                             {mode === 'login' ? 'New here?' : 'Have an account?'}{' '}
                             <button
                                 type="button"
                                 onClick={toggleMode}
-                                className="text-zinc-400 hover:text-white font-medium transition-colors"
+                                className="text-muted-foreground hover:text-foreground font-medium transition-colors"
                             >
                                 {mode === 'login' ? 'Create account' : 'Sign in'}
                             </button>
@@ -515,3 +515,4 @@ export function AuthScreen() {
         </div>
     );
 }
+

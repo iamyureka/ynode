@@ -139,7 +139,7 @@ const NodeToolbar = ({ nodeId, selected }: NodeToolbarProps) => {
     >
       <button
         onClick={handleDelete}
-        className="p-1.5 rounded-md text-zinc-400 hover:text-red-400 transition-colors"
+        className="p-1.5 rounded-md text-muted-foreground hover:text-red-400 transition-colors"
         title="Delete"
       >
         <Trash2 className="w-3.5 h-3.5" />
@@ -147,14 +147,14 @@ const NodeToolbar = ({ nodeId, selected }: NodeToolbarProps) => {
       <div className="relative">
         <button
           onClick={handleMenuClick}
-          className="p-1.5 rounded-md text-zinc-400 hover:text-white transition-colors"
+          className="p-1.5 rounded-md text-muted-foreground hover:text-white transition-colors"
           title="More options"
         >
           <MoreHorizontal className="w-3.5 h-3.5" />
         </button>
 
         {showMenu && (
-          <div className="absolute top-full right-0 mt-1 w-36 bg-zinc-900 rounded-lg shadow-xl overflow-hidden z-50">
+          <div className="absolute top-full right-0 mt-1 w-36 bg-background rounded-lg shadow-xl overflow-hidden z-50">
             <button
               onClick={handleCopy}
               className="w-full flex items-center gap-2 px-3 py-2 text-xs text-zinc-300 hover:bg-white/5 hover:text-white transition-colors"
@@ -291,7 +291,7 @@ export const HttpRequestNode = memo(({ data, selected, id }: NodeProps) => {
             </div>
             <span className="font-semibold text-sm">{nodeData.label}</span>
           </div>
-          <div className="flex items-center gap-2 p-2 rounded bg-black/20 border border-white/5">
+          <div className="flex items-center gap-2 p-2 rounded bg-sidebar/20 border border-border/50">
             <Badge
               variant="secondary"
               className="text-[10px] font-bold bg-brand-cyan/20 text-brand-cyan hover:bg-brand-cyan/30"
@@ -329,7 +329,7 @@ export const IfElseNode = memo(({ data, selected, id }: NodeProps) => {
         <ExecutionBadge state={nodeData.executionState} />
         <CustomHandle type="target" position={Position.Left} portType="any" />
 
-        <div className="p-3 flex items-center gap-3 border-b border-white/5">
+        <div className="p-3 flex items-center gap-3 border-b border-border/50">
           <div className="p-2 rounded-md bg-brand-rose/10 text-brand-rose">
             <Split className="w-4 h-4" />
           </div>
@@ -417,3 +417,4 @@ export function useNodeTypes(): Record<string, any> {
 // Static export for backwards compatibility (uses custom nodes only)
 // For full dynamic support, use the useNodeTypes hook
 export const nodeTypes = customNodeComponents;
+

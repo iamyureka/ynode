@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import { fetchUserExecutions } from '@/api/workflowApi';
 import { useAuthStore } from '@/store/authStore';
 import { useWorkflowDataStore } from '@/store/workflowDataStore';
+import { cn } from '@/lib/utils';
 
 export function Overview() {
   const user = useAuthStore((state) => state.user);
@@ -105,20 +106,20 @@ export function Overview() {
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white mb-2">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground mb-1">
             Dashboard
           </h1>
-          <p className="text-zinc-400 text-lg font-light">
+          <p className="text-muted-foreground text-sm font-light">
             Overview of your automation ecosystem.
           </p>
         </div>
         <div className="flex gap-3">
           <Link
             to="/new-workflow"
-            className="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-medium transition-all shadow-lg shadow-zinc-900/25 hover:shadow-zinc-900/40 hover:-translate-y-0.5"
+            className="group inline-flex items-center justify-center gap-2 px-4 py-2 rounded-sm bg-secondary hover:bg-secondary/90 text-white font-medium transition-all shadow-lg active:scale-95"
           >
             <Play className="h-4 w-4 fill-current" />
             <span>New Workflow</span>
@@ -130,30 +131,29 @@ export function Overview() {
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="relative p-6 rounded-2xl bg-zinc-900/60 border border-white/5 backdrop-blur-md hover:border-white/10 transition-all duration-300 group overflow-hidden"
+            className="relative p-5 rounded-lg bg-sidebar border border-border group overflow-hidden shadow-sm"
           >
-            <div
-              className={`absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity`}
-            >
-              <stat.icon className="w-24 h-24 rotate-12 -mr-8 -mt-8" />
-            </div>
-
             <div className="relative z-10">
               <div
-                className={`inline-flex p-3 rounded-xl ${stat.bg} ${stat.color} mb-4 ring-inset ${stat.border}`}
+                className={cn(
+                  'inline-flex p-2.5 rounded-lg mb-3 border',
+                  stat.bg,
+                  stat.color,
+                  stat.border
+                )}
               >
-                <stat.icon className="h-6 w-6" />
+                <stat.icon className="h-5 w-5" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-3xl font-bold text-white tracking-tight">
+                <h3 className="text-2xl font-bold text-foreground tracking-tight">
                   {stat.value}
                 </h3>
                 <div className="flex items-center gap-2">
-                  <p className="text-sm text-zinc-400 font-medium">
+                  <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
                     {stat.label}
                   </p>
                   {stat.sub && (
-                    <span className="text-[10px] uppercase tracking-wider text-zinc-600 bg-white/5 px-1.5 py-0.5 rounded border border-white/5">
+                    <span className="text-[9px] uppercase tracking-widest text-muted-foreground bg-background px-1.5 py-0.5 rounded border border-border">
                       {stat.sub}
                     </span>
                   )}
@@ -165,73 +165,75 @@ export function Overview() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 rounded-2xl bg-zinc-900/40 border border-white/5 overflow-hidden backdrop-blur-sm flex flex-col">
-          <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
-            <h2 className="text-lg font-semibold text-white tracking-tight flex items-center gap-2">
-              <Workflow className="h-5 w-5 text-zinc-400" />
+        <div className="lg:col-span-2 rounded-lg bg-sidebar border border-border overflow-hidden flex flex-col shadow-sm">
+          <div className="p-4 border-b border-border flex items-center justify-between bg-secondary/20">
+            <h2 className="text-sm font-semibold text-foreground tracking-tight flex items-center gap-2">
+              <Workflow className="h-4 w-4 text-muted-foreground" />
               Recent Workflows
             </h2>
             <Link
               to="/workflows"
-              className="text-xs font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+              className="text-[11px] font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
             >
               View All <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
-          <div className="divide-y divide-white/5 flex-1">
+          <div className="divide-y divide-border flex-1">
             {workflows.length === 0 ? (
               <div className="h-64 flex flex-col items-center justify-center text-center p-8">
-                <div className="h-16 w-16 bg-zinc-900/80 rounded-full flex items-center justify-center mb-4 border border-white/5 shadow-inner">
-                  <Workflow className="h-8 w-8 text-zinc-600" />
+                <div className="h-12 w-12 bg-background rounded-lg flex items-center justify-center mb-4 border border-border shadow-inner">
+                  <Workflow className="h-6 w-6 text-muted-foreground/40" />
                 </div>
-                <h3 className="text-white font-medium mb-1">
+                <h3 className="text-foreground font-medium text-sm mb-1">
                   No workflows yet
                 </h3>
-                <p className="text-zinc-500 text-sm max-w-xs mx-auto">
-                  Create your first workflow to start automating your tasks.
+                <p className="text-muted-foreground text-xs max-w-[200px] mx-auto">
+                  Create your first workflow to start automating.
                 </p>
               </div>
             ) : (
               workflows.slice(0, 5).map((workflow) => (
                 <div
                   key={workflow.id}
-                  className="p-4 flex items-center justify-between gap-3 hover:bg-white/[0.02] transition-colors group"
+                  className="p-3 flex items-center justify-between gap-3 hover:bg-white/5 transition-colors group"
                 >
                   <div className="flex items-center gap-3 min-w-0 flex-1">
                     <div
-                      className={`h-10 w-10 shrink-0 rounded-lg flex items-center justify-center border ${workflow.isActive
-                        ? 'bg-green-500/10 border-green-500/20 text-green-400'
-                        : 'bg-zinc-800/50 border-white/5 text-zinc-500'
-                        }`}
+                      className={cn(
+                        'h-9 w-9 shrink-0 rounded flex items-center justify-center border',
+                        workflow.isActive
+                          ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                          : 'bg-background border-border text-muted-foreground'
+                      )}
                     >
-                      <Workflow className="h-5 w-5" />
+                      <Workflow className="h-4 w-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="text-white font-medium text-sm group-hover:text-primary transition-colors truncate">
+                      <h3 className="text-foreground font-medium text-sm group-hover:text-primary transition-colors truncate">
                         {workflow.name}
                       </h3>
-                      <p
-                        className="text-xs text-zinc-500 font-mono"
-                        title={workflow.id}
-                      >
-                        ID: {workflow.id.slice(0, 8)}…
+                      <p className="text-[10px] text-muted-foreground font-mono truncate" title={workflow.id}>
+                        {workflow.id.slice(0, 8)}…
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex items-center gap-3 shrink-0">
                     <div
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider whitespace-nowrap ${workflow.isActive
-                        ? 'bg-green-500/10 text-green-400 border border-green-500/20'
-                        : 'bg-zinc-800 text-zinc-400 border border-white/5'
-                        }`}
+                      className={cn(
+                        'px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest whitespace-nowrap',
+                        workflow.isActive
+                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                          : 'bg-background text-muted-foreground border border-border'
+                      )}
                     >
                       {workflow.isActive ? 'Active' : 'Stopped'}
                     </div>
                     <Link
                       to={`/editor/${workflow.id}`}
-                      className="h-8 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-medium text-white transition-colors border border-white/5 hover:border-white/10 flex items-center"
+                      className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors group/link"
                     >
-                      Edit
+                      Edit Workflow
+                      <ArrowRight className="h-3 w-3 group-hover/link:translate-x-0.5 transition-transform" />
                     </Link>
                   </div>
                 </div>
@@ -240,48 +242,48 @@ export function Overview() {
           </div>
         </div>
 
-        <div className="rounded-2xl bg-zinc-900/40 border border-white/5 overflow-hidden flex flex-col h-full backdrop-blur-sm">
-          <div className="p-6 border-b border-white/5 bg-white/[0.02]">
-            <h2 className="text-lg font-semibold text-white tracking-tight flex items-center gap-2">
-              <Zap className="h-5 w-5 text-amber-400" />
+        <div className="rounded-lg bg-sidebar border border-border overflow-hidden flex flex-col h-full shadow-sm">
+          <div className="p-4 border-b border-border bg-secondary/20">
+            <h2 className="text-sm font-semibold text-foreground tracking-tight flex items-center gap-2">
+              <Zap className="h-4 w-4 text-amber-500" />
               System Status
             </h2>
           </div>
-          <div className="p-6 flex-1 flex flex-col gap-6">
-            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-600/10 border border-green-500/20 p-5">
-              <div className="flex items-start gap-4">
-                <span className="relative flex h-3 w-3 mt-1.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+          <div className="p-4 flex-1 flex flex-col gap-5">
+            <div className="relative overflow-hidden rounded-lg bg-emerald-500/5 border border-emerald-500/20 p-4">
+              <div className="flex items-start gap-3">
+                <span className="relative flex h-2 w-2 mt-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
                 <div>
-                  <h3 className="text-sm font-semibold text-green-200">
+                  <h3 className="text-xs font-semibold text-emerald-400">
                     ynode/core
                   </h3>
-                  <p className="text-xs text-green-300/60 mt-1">
-                    running v0.1.0
+                  <p className="text-[10px] text-emerald-500/60 mt-0.5">
+                    running v0.1.0-stable
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-3">
-              <h4 className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">
+            <div className="space-y-2.5">
+              <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                 Quick Actions
               </h4>
-              <button className="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all group">
-                <span className="block text-sm font-medium text-zinc-200 group-hover:text-white">
+              <button className="w-full text-left px-3.5 py-2.5 rounded-lg bg-background hover:bg-secondary/40 border border-border transition-all group">
+                <span className="block text-xs font-medium text-foreground group-hover:text-primary">
                   View Documentation (WIP)
                 </span>
-                <span className="block text-xs text-zinc-500 mt-0.5">
+                <span className="block text-[10px] text-muted-foreground mt-0.5">
                   Learn how to build complex flows
                 </span>
               </button>
-              <button className="w-full text-left px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all group">
-                <span className="block text-sm font-medium text-zinc-200 group-hover:text-white">
-                  API Keys (WIP)
+              <button className="w-full text-left px-3.5 py-2.5 rounded-lg bg-background hover:bg-secondary/40 border border-border transition-all group">
+                <span className="block text-xs font-medium text-foreground group-hover:text-primary">
+                  API Configuration (WIP)
                 </span>
-                <span className="block text-xs text-zinc-500 mt-0.5">
+                <span className="block text-[10px] text-muted-foreground mt-0.5">
                   Manage your access tokens
                 </span>
               </button>
@@ -292,3 +294,4 @@ export function Overview() {
     </div>
   );
 }
+

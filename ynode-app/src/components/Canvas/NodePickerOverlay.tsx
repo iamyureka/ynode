@@ -124,7 +124,7 @@ export const NodePickerOverlay = memo(() => {
     return (
         <div
             ref={pickerRef}
-            className="fixed bg-zinc-900 rounded-lg shadow-2xl overflow-hidden border border-white/10"
+            className="fixed bg-background rounded-lg shadow-2xl overflow-hidden"
             style={{
                 left: screenPos.x - 120,
                 top: screenPos.y + 30,
@@ -137,8 +137,8 @@ export const NodePickerOverlay = memo(() => {
             onPointerDown={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
         >
-            <div className="px-3 py-2 border-b border-white/10">
-                <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+            <div className="px-3 py-2 border-b border-border">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     Insert Node
                 </span>
             </div>
@@ -152,7 +152,7 @@ export const NodePickerOverlay = memo(() => {
 
                     return (
                         <div key={category} className="mb-2">
-                            <div className="px-2 py-1 text-[10px] font-semibold text-zinc-500 uppercase">
+                            <div className="px-2 py-1 text-[10px] font-semibold text-muted-foreground uppercase">
                                 {meta.label}
                             </div>
                             {nodes.map((node) => {
@@ -163,7 +163,7 @@ export const NodePickerOverlay = memo(() => {
                                         onClick={() => handleSelect(node.type)}
                                         className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left text-sm text-zinc-300 hover:bg-white/10 hover:text-white transition-colors"
                                     >
-                                        <Icon size={14} className="shrink-0 text-zinc-400" />
+                                        <Icon size={14} className="shrink-0 text-muted-foreground" />
                                         <span className="truncate">{node.label}</span>
                                     </button>
                                 );
@@ -177,3 +177,4 @@ export const NodePickerOverlay = memo(() => {
 });
 
 NodePickerOverlay.displayName = 'NodePickerOverlay';
+

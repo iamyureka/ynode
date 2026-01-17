@@ -134,7 +134,7 @@ export function MonacoCodeEditor({
                 </Label>
             )}
 
-            <div className="rounded-lg overflow-hidden border border-white/10 shadow-lg">
+            <div className="rounded-lg overflow-hidden border border-border shadow-lg">
                 <Editor
                     height={height}
                     language={language}
@@ -193,3 +193,4 @@ export function MonacoCodeEditor({
         </div>
     );
 }
+

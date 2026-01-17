@@ -112,14 +112,14 @@ export function MemoryTable({ className }: MemoryTableProps) {
     }
 
     return (
-        <div className={cn('flex flex-col h-full', className)}>
+        <div className={cn('flex flex-col h-full bg-[#252526]', className)}>
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
+            <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-sidebar">
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Database className="w-4 h-4" />
                     <span>WORKFLOW MEMORY</span>
                     {entries.length > 0 && (
-                        <Badge variant="secondary" className="text-[10px] h-5 bg-white/10">
+                        <Badge variant="secondary" className="text-[10px] h-5 bg-white/5 border border-border/50">
                             {entries.length}
                         </Badge>
                     )}
@@ -127,7 +127,7 @@ export function MemoryTable({ className }: MemoryTableProps) {
                 <button
                     onClick={fetchMemory}
                     disabled={isLoading}
-                    className="p-1 hover:bg-white/10 rounded transition-colors disabled:opacity-50"
+                    className="p-1 hover:bg-secondary/50 rounded transition-colors disabled:opacity-50"
                     title="Refresh"
                 >
                     <RefreshCw className={cn('w-4 h-4 text-muted-foreground', isLoading && 'animate-spin')} />
@@ -135,7 +135,7 @@ export function MemoryTable({ className }: MemoryTableProps) {
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+            <div className="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
                 {error ? (
                     <div className="text-red-400 text-xs text-center py-4">{error}</div>
                 ) : entries.length === 0 ? (
@@ -145,7 +145,7 @@ export function MemoryTable({ className }: MemoryTableProps) {
                 ) : (
                     <table className="w-full text-xs">
                         <thead>
-                            <tr className="text-muted-foreground border-b border-white/10">
+                            <tr className="text-muted-foreground border-b border-border">
                                 <th className="text-left py-2 px-2 font-medium">Key</th>
                                 <th className="text-left py-2 px-2 font-medium">Value</th>
                                 <th className="text-left py-2 px-2 font-medium w-24">Updated</th>
@@ -156,7 +156,7 @@ export function MemoryTable({ className }: MemoryTableProps) {
                             {entries.map((entry) => (
                                 <tr
                                     key={entry.key}
-                                    className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                                    className="border-b border-border/40 hover:bg-secondary/60 transition-colors"
                                 >
                                     <td className="py-2 px-2">
                                         <div className="flex items-center gap-1.5">
@@ -170,7 +170,7 @@ export function MemoryTable({ className }: MemoryTableProps) {
                                         </div>
                                     </td>
                                     <td className="py-2 px-2">
-                                        <code className="bg-black/30 px-1.5 py-0.5 rounded text-[10px] text-muted-foreground font-mono">
+                                        <code className="bg-background px-1.5 py-0.5 rounded text-[10px] text-muted-foreground font-mono border border-border/40">
                                             {formatValue(entry.value)}
                                         </code>
                                     </td>
@@ -203,3 +203,4 @@ export function MemoryTable({ className }: MemoryTableProps) {
         </div>
     );
 }
+

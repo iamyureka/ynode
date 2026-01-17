@@ -24,28 +24,30 @@ export function CodeEditor({
             base: 'vs-dark',
             inherit: true,
             rules: [
-                { token: 'comment', foreground: '64748B', fontStyle: 'italic' },
-                { token: 'keyword', foreground: 'A78BFA' },
-                { token: 'string', foreground: '34D399' },
-                { token: 'number', foreground: 'FBBF24' },
-                { token: 'variable', foreground: 'F1F5F9' },
-                { token: 'type', foreground: '60A5FA' },
-                { token: 'function', foreground: '06B6D4' },
-                { token: 'operator', foreground: 'A78BFA' },
+                { token: 'comment', foreground: '6A9955', fontStyle: 'italic' },
+                { token: 'keyword', foreground: '569CD6' },
+                { token: 'string', foreground: 'CE9178' },
+                { token: 'number', foreground: 'B5CEA8' },
+                { token: 'variable', foreground: '9CDCFE' },
+                { token: 'type', foreground: '4EC9B0' },
+                { token: 'function', foreground: 'DCDCAA' },
+                { token: 'operator', foreground: 'D4D4D4' },
+                { token: 'identifier', foreground: '9CDCFE' },
+                { token: 'delimiter', foreground: 'D4D4D4' },
             ],
             colors: {
-                'editor.background': '#09090b',
-                'editor.foreground': '#F1F5F9',
+                'editor.background': '#1E1E1F',
+                'editor.foreground': '#D4D4D4',
                 'editor.lineHighlightBackground': '#FFFFFF06',
-                'editor.selectionBackground': '#A78BFA30',
-                'editorCursor.foreground': '#A78BFA',
-                'editor.selectionHighlightBackground': '#A78BFA15',
-                'editorIndentGuide.background': '#FFFFFF08',
-                'editorIndentGuide.activeBackground': '#A78BFA30',
-                'editorLineNumber.foreground': '#3f3f46',
-                'editorLineNumber.activeForeground': '#71717a',
-                'editorBracketMatch.background': '#A78BFA25',
-                'editorBracketMatch.border': '#A78BFA',
+                'editor.selectionBackground': '#264F78',
+                'editorCursor.foreground': '#AEAFAD',
+                'editor.selectionHighlightBackground': '#ADD6FF26',
+                'editorIndentGuide.background': '#404040',
+                'editorIndentGuide.activeBackground': '#707070',
+                'editorLineNumber.foreground': '#858585',
+                'editorLineNumber.activeForeground': '#C6C6C6',
+                'editorBracketMatch.background': '#0064001a',
+                'editorBracketMatch.border': '#888888',
             },
         });
 
@@ -128,9 +130,9 @@ ${outputDefs}
 
     return (
         <div className="h-full flex flex-col bg-[#09090b]">
-            <div className="px-4 py-2 border-b border-white/5 bg-black/40 flex items-center justify-between shrink-0">
-                <span className="text-xs text-zinc-500">JavaScript</span>
-                <span className="text-xs text-zinc-600">
+            <div className="px-4 py-2 border-b border-border bg-[#1E1E1F] flex items-center justify-between shrink-0">
+                <span className="text-xs text-muted-foreground">JavaScript</span>
+                <span className="text-xs text-muted-foreground">
                     {code.split('\n').length} lines
                 </span>
             </div>
@@ -185,41 +187,58 @@ ${outputDefs}
             </div>
 
             {(inputs.length > 0 || outputs.length > 0) && (
-                <div className="px-4 py-2 border-t border-white/5 bg-black/40 flex flex-wrap gap-x-4 gap-y-1 shrink-0">
-                    {inputs.length > 0 && (
-                        <div className="flex items-center gap-2">
-                            <span className="text-[10px] text-zinc-600 uppercase">
-                                Inputs:
-                            </span>
-                            {inputs.map((input) => (
-                                <code
-                                    key={input.id}
-                                    className="text-[10px] px-1.5 py-0.5 bg-zinc-800 rounded text-pink-400"
-                                    title={`Type: ${input.type}`}
-                                >
-                                    inputs.{input.id}
-                                </code>
-                            ))}
-                        </div>
-                    )}
-                    {outputs.length > 0 && (
-                        <div className="flex items-center gap-2">
-                            <span className="text-[10px] text-zinc-600 uppercase">
-                                Outputs:
-                            </span>
-                            {outputs.map((output) => (
-                                <code
-                                    key={output.id}
-                                    className="text-[10px] px-1.5 py-0.5 bg-zinc-800 rounded text-green-400"
-                                    title={`Type: ${output.type}`}
-                                >
-                                    outputs.{output.id}
-                                </code>
-                            ))}
-                        </div>
-                    )}
+                <div className="px-4 py-2 border-t border-border bg-[#1E1E1F] shrink-0 overflow-x-auto">
+                    <div className="flex items-center gap-4 min-w-max">
+                        {inputs.length > 0 && (
+                            <div className="flex items-center gap-2">
+                                <span className="text-[10px] text-muted-foreground uppercase shrink-0">
+                                    Inputs:
+                                </span>
+                                <div className="flex items-center gap-1.5 flex-wrap max-w-[300px]">
+                                    {inputs.slice(0, 6).map((input) => (
+                                        <code
+                                            key={input.id}
+                                            className="text-[10px] px-1.5 py-0.5 bg-zinc-800 rounded text-pink-400 whitespace-nowrap"
+                                            title={`Type: ${input.type}`}
+                                        >
+                                            inputs.{input.id}
+                                        </code>
+                                    ))}
+                                    {inputs.length > 6 && (
+                                        <span className="text-[10px] text-muted-foreground">
+                                            +{inputs.length - 6} more
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                        {outputs.length > 0 && (
+                            <div className="flex items-center gap-2">
+                                <span className="text-[10px] text-muted-foreground uppercase shrink-0">
+                                    Outputs:
+                                </span>
+                                <div className="flex items-center gap-1.5 flex-wrap max-w-[300px]">
+                                    {outputs.slice(0, 6).map((output) => (
+                                        <code
+                                            key={output.id}
+                                            className="text-[10px] px-1.5 py-0.5 bg-zinc-800 rounded text-green-400 whitespace-nowrap"
+                                            title={`Type: ${output.type}`}
+                                        >
+                                            outputs.{output.id}
+                                        </code>
+                                    ))}
+                                    {outputs.length > 6 && (
+                                        <span className="text-[10px] text-muted-foreground">
+                                            +{outputs.length - 6} more
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             )}
         </div>
     );
 }
+
