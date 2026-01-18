@@ -2,10 +2,10 @@ import { z } from 'zod';
 import type { Request, Response, NextFunction } from 'express';
 
 export const PASSWORD_POLICY = {
-  minLength: 6,
-  requireUppercase: false,
-  requireLowercase: false,
-  requireNumber: false,
+  minLength: 12,
+  requireUppercase: true,
+  requireLowercase: true,
+  requireNumber: true,
   requireSpecial: false,
   maxLength: 128,
 };
@@ -19,6 +19,18 @@ const passwordSchema = z
   .max(
     PASSWORD_POLICY.maxLength,
     `Password must be at most ${PASSWORD_POLICY.maxLength} characters`
+  )
+  .refine(
+    (val) => !PASSWORD_POLICY.requireUppercase || /[A-Z]/.test(val),
+    'Password must contain at least one uppercase letter'
+  )
+  .refine(
+    (val) => !PASSWORD_POLICY.requireLowercase || /[a-z]/.test(val),
+    'Password must contain at least one lowercase letter'
+  )
+  .refine(
+    (val) => !PASSWORD_POLICY.requireNumber || /[0-9]/.test(val),
+    'Password must contain at least one number'
   );
 
 export const registerSchema = z.object({

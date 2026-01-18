@@ -182,17 +182,17 @@ export async function checkHealth(): Promise<{
 export type WsMessage =
   | { type: 'node:start'; workflowId: string; nodeId: string }
   | {
-      type: 'node:complete';
-      workflowId: string;
-      nodeId: string;
-      success: boolean;
-    }
+    type: 'node:complete';
+    workflowId: string;
+    nodeId: string;
+    success: boolean;
+  }
   | { type: 'node:skip'; workflowId: string; nodeId: string }
   | {
-      type: 'workflow:complete';
-      workflowId: string;
-      status: 'success' | 'error';
-    }
+    type: 'workflow:complete';
+    workflowId: string;
+    status: 'success' | 'error';
+  }
   | { type: 'log'; workflowId: string; log: ExecutionLog }
   | { type: 'error'; message: string }
   | { type: 'workflow:saved'; workflow: Workflow; isNew: boolean }
@@ -217,9 +217,12 @@ export class WorkflowWebSocket {
   connect(): void {
     if (this.ws?.readyState === WebSocket.OPEN) return;
 
-    const user = useAuthStore.getState().user;
-    const userId = user?.id || '';
-    const wsUrl = `ws://localhost:3001/ws?userId=${encodeURIComponent(userId)}`;
+    const token = useAuthStore.getState().token;
+    if (!token) {
+      console.warn('Cannot connect WebSocket: No authentication token');
+      return;
+    }
+    const wsUrl = `ws://localhost:3001/ws?token=${encodeURIComponent(token)}`;
     this.ws = new WebSocket(wsUrl);
 
     this.ws.onopen = () => {

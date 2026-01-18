@@ -204,7 +204,7 @@ export function NodeAssembler() {
         editingNode,
         createCustomNode,
         updateCustomNode,
-        testCode,
+        testCodeStream,
     } = useCustomNodesStore();
 
     // Form state
@@ -243,6 +243,7 @@ export function NodeAssembler() {
     } | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [showMenu, setShowMenu] = useState(false);
+    const [streamingLogs, setStreamingLogs] = useState<string[]>([]);
 
     const regenerateCode = useCallback(() => {
         const newCode = generateCodeTemplate(
@@ -377,6 +378,7 @@ export function NodeAssembler() {
         setTestResult(null);
         setError(null);
         setShowTestPanel(true);
+        setStreamingLogs([]);
 
         try {
             const testInputs: Record<string, unknown> = {};
@@ -384,7 +386,15 @@ export function NodeAssembler() {
                 testInputs[input.id] = getDefaultValueForType(input.type);
             });
 
-            const result = await testCode(code, testInputs, {});
+            const result = await testCodeStream(
+                code,
+                testInputs,
+                {},
+                requiresNetwork,
+                (message) => {
+                    setStreamingLogs((prev) => [...prev, message]);
+                }
+            );
             setTestResult(result);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Test failed');
@@ -1001,9 +1011,29 @@ export function NodeAssembler() {
                                 </div>
                                 <div className="flex-1 overflow-y-auto p-2 min-h-0">
                                     {isTesting ? (
-                                        <div className="flex items-center justify-center h-full gap-2">
-                                            <Loader2 className="w-4 h-4 animate-spin text-zinc-500" />
-                                            <span className="text-[10px] text-zinc-500">Running...</span>
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-2 px-2 py-1.5 bg-blue-500/10 rounded">
+                                                <Loader2 className="w-3 h-3 animate-spin text-blue-400" />
+                                                <span className="text-[10px] text-blue-400">Running...</span>
+                                            </div>
+                                            {streamingLogs.length > 0 && (
+                                                <div>
+                                                    <div className="text-[9px] text-zinc-600 uppercase mb-0.5 flex items-center gap-1">
+                                                        <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                                                        Live Console ({streamingLogs.length})
+                                                    </div>
+                                                    <div className="space-y-0.5 max-h-32 overflow-y-auto">
+                                                        {streamingLogs.map((log, i) => (
+                                                            <div
+                                                                key={i}
+                                                                className="text-[9px] text-green-400 bg-black/40 rounded px-1.5 py-0.5"
+                                                            >
+                                                                {log}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     ) : testResult ? (
                                         <div className="space-y-2">

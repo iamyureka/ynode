@@ -74,7 +74,15 @@ interface CustomNodesState {
     testCode: (
         code: string,
         inputs: Record<string, unknown>,
-        config: Record<string, unknown>
+        config: Record<string, unknown>,
+        requiresNetwork?: boolean
+    ) => Promise<TestExecutionResult>;
+    testCodeStream: (
+        code: string,
+        inputs: Record<string, unknown>,
+        config: Record<string, unknown>,
+        requiresNetwork: boolean,
+        onLog: (message: string) => void
     ) => Promise<TestExecutionResult>;
 }
 
@@ -166,7 +174,8 @@ export const useCustomNodesStore = create<CustomNodesState>((set, get) => ({
     testCode: async (
         code: string,
         testInputs: Record<string, unknown>,
-        testConfig: Record<string, unknown>
+        testConfig: Record<string, unknown>,
+        requiresNetwork: boolean = false
     ) => {
         const response = await fetch(`${API_BASE}/custom-nodes/test`, {
             method: 'POST',
@@ -174,12 +183,71 @@ export const useCustomNodesStore = create<CustomNodesState>((set, get) => ({
                 ...getAuthHeaders(),
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ code, testInputs, testConfig }),
+            body: JSON.stringify({ code, testInputs, testConfig, requiresNetwork }),
         });
         if (!response.ok) {
             const error = await response.json();
             throw new Error(error.error || 'Test execution failed');
         }
         return response.json();
+    },
+
+    testCodeStream: async (
+        code: string,
+        testInputs: Record<string, unknown>,
+        testConfig: Record<string, unknown>,
+        requiresNetwork: boolean,
+        onLog: (message: string) => void
+    ) => {
+        return new Promise((resolve, reject) => {
+            const controller = new AbortController();
+
+            fetch(`${API_BASE}/custom-nodes/test-stream`, {
+                method: 'POST',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code, testInputs, testConfig, requiresNetwork }),
+                signal: controller.signal,
+            })
+                .then(async (response) => {
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.error || 'Test execution failed');
+                    }
+
+                    const reader = response.body?.getReader();
+                    if (!reader) throw new Error('No reader');
+
+                    const decoder = new TextDecoder();
+                    let buffer = '';
+
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+
+                        buffer += decoder.decode(value, { stream: true });
+                        const lines = buffer.split('\n');
+                        buffer = lines.pop() || '';
+
+                        for (const line of lines) {
+                            if (line.startsWith('data: ')) {
+                                try {
+                                    const data = JSON.parse(line.slice(6));
+                                    if (data.type === 'log') {
+                                        onLog(data.message);
+                                    } else if (data.type === 'result') {
+                                        resolve(data as TestExecutionResult);
+                                    } else if (data.type === 'error') {
+                                        reject(new Error(data.message));
+                                    }
+                                } catch { }
+                            }
+                        }
+                    }
+                })
+                .catch(reject);
+        });
     },
 }));

@@ -13,6 +13,7 @@ import {
   getWorkflowById,
 } from '../db';
 import { v4 as uuid } from 'uuid';
+import { verifyToken, validateSession } from '../middleware/auth';
 
 const subscriptions = new Map<string, Set<WebSocket>>();
 
@@ -24,14 +25,32 @@ export function setupWebSocket(server: Server): WebSocketServer {
   const wss = new WebSocketServer({ server, path: '/ws' });
 
   wss.on('connection', (ws: WebSocket, req) => {
-    console.log('WebSocket client connected');
-    clientSubscriptions.set(ws, new Set());
-
     const url = new URL(req.url || '', `http://${req.headers.host}`);
-    const userId = url.searchParams.get('userId');
-    if (userId) {
-      clientUsers.set(ws, userId);
+
+    const token = url.searchParams.get('token');
+    if (!token) {
+      console.warn('WebSocket connection rejected: No token provided');
+      ws.close(4001, 'Authentication required');
+      return;
     }
+
+    const payload = verifyToken(token);
+    if (!payload) {
+      console.warn('WebSocket connection rejected: Invalid token');
+      ws.close(4001, 'Invalid or expired token');
+      return;
+    }
+
+    const session = validateSession(token);
+    if (!session) {
+      console.warn('WebSocket connection rejected: Session invalid');
+      ws.close(4001, 'Session invalid or expired');
+      return;
+    }
+
+    console.log(`WebSocket client authenticated: ${payload.userId}`);
+    clientSubscriptions.set(ws, new Set());
+    clientUsers.set(ws, payload.userId);
 
     ws.on('message', (data: Buffer) => {
       try {

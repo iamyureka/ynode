@@ -71,7 +71,7 @@ import {
   restoreCustomNodeVersion,
   customNodeRowToApi,
 } from './db/customNodes.js';
-import { testCustomNodeCode } from './executor/customNodeExecutor.js';
+import { testCustomNodeCode, testCustomNodeCodeWithCallback } from './executor/customNodeExecutor.js';
 import { executeWorkflow } from './executor/index.js';
 import {
   registerBuiltinNodes,
@@ -208,6 +208,12 @@ registerBuiltinNodes();
    */
   app.post('/api/plugins/load', authMiddleware, async (req, res) => {
     try {
+      if (process.env.NODE_ENV === 'production' && process.env.ALLOW_PLUGIN_LOADING !== 'true') {
+        return res.status(403).json({
+          error: 'Plugin loading is disabled in production'
+        });
+      }
+
       const { packageName } = req.body;
 
       if (!packageName || typeof packageName !== 'string') {
@@ -665,6 +671,21 @@ registerBuiltinNodes();
           return res.status(404).json({ error: 'Webhook not found' });
         }
 
+        const settings = workflowRow.settings ? JSON.parse(workflowRow.settings) : null;
+        if (settings?.webhookSecret) {
+          const providedSecret = req.headers['x-webhook-secret'];
+          if (!providedSecret || providedSecret !== settings.webhookSecret) {
+            auditService.log(AuditAction.WEBHOOK_TRIGGERED, {
+              userId: workflowRow.user_id,
+              req,
+              resourceType: 'workflow',
+              resourceId: workflowId,
+              metadata: { error: 'Invalid webhook secret' },
+            });
+            return res.status(401).json({ error: 'Invalid webhook secret' });
+          }
+        }
+
         const executionId = uuidv4();
 
         createExecution({
@@ -1054,11 +1075,11 @@ registerBuiltinNodes();
 
   /**
    * POST /api/custom-nodes/test
-   * Test-execute custom node code without saving
+   * Test-execute custom node code without saving (returns final result)
    */
   app.post('/api/custom-nodes/test', authMiddleware, async (req, res) => {
     try {
-      const { code, testInputs, testConfig } = req.body;
+      const { code, testInputs, testConfig, requiresNetwork } = req.body;
 
       if (!code) {
         return res.status(400).json({ error: 'Code is required' });
@@ -1067,7 +1088,8 @@ registerBuiltinNodes();
       const result = await testCustomNodeCode(
         code,
         testInputs || {},
-        testConfig || {}
+        testConfig || {},
+        requiresNetwork === true
       );
 
       res.json(result);
@@ -1076,6 +1098,50 @@ registerBuiltinNodes();
       const message =
         error instanceof Error ? error.message : 'Test execution failed';
       res.status(500).json({ error: message });
+    }
+  });
+
+  /**
+   * POST /api/custom-nodes/test-stream
+   * Test-execute with SSE streaming for real-time console output
+   */
+  app.post('/api/custom-nodes/test-stream', authMiddleware, async (req, res) => {
+    // Set up SSE headers
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    try {
+      const { code, testInputs, testConfig, requiresNetwork } = req.body;
+
+      if (!code) {
+        res.write(`data: ${JSON.stringify({ type: 'error', message: 'Code is required' })}\n\n`);
+        res.end();
+        return;
+      }
+
+      // Stream logs in real-time
+      const onLog = (message: string) => {
+        res.write(`data: ${JSON.stringify({ type: 'log', message })}\n\n`);
+      };
+
+      const result = await testCustomNodeCodeWithCallback(
+        code,
+        testInputs || {},
+        testConfig || {},
+        requiresNetwork === true,
+        onLog
+      );
+
+      // Send final result
+      res.write(`data: ${JSON.stringify({ type: 'result', ...result })}\n\n`);
+      res.end();
+    } catch (error) {
+      console.error('POST /api/custom-nodes/test-stream error:', error);
+      const message = error instanceof Error ? error.message : 'Test execution failed';
+      res.write(`data: ${JSON.stringify({ type: 'error', message })}\n\n`);
+      res.end();
     }
   });
 

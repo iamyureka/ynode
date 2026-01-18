@@ -8,9 +8,10 @@ interface TestPanelProps {
     result: TestExecutionResult | null;
     onRunTest: () => void;
     isTesting: boolean;
+    streamingLogs?: string[];
 }
 
-export function TestPanel({ inputs, result, onRunTest, isTesting }: TestPanelProps) {
+export function TestPanel({ inputs, result, onRunTest, isTesting, streamingLogs = [] }: TestPanelProps) {
     return (
         <div className="h-full flex flex-col bg-[#171717]">
             <div className="px-4 py-3 border-b border-border/50 bg-sidebar/40 flex items-center justify-between">
@@ -31,7 +32,27 @@ export function TestPanel({ inputs, result, onRunTest, isTesting }: TestPanelPro
             </div>
 
             <div className="flex-1 overflow-y-auto p-4">
-                {!result ? (
+                {/* Show streaming logs during execution */}
+                {isTesting && streamingLogs.length > 0 && (
+                    <div className="mb-4">
+                        <h4 className="text-xs text-muted-foreground uppercase mb-2 flex items-center gap-2">
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                            Live Console ({streamingLogs.length})
+                        </h4>
+                        <div className="rounded-lg bg-sidebar/60 border border-border/50 overflow-hidden max-h-40 overflow-y-auto">
+                            {streamingLogs.map((log, i) => (
+                                <div
+                                    key={i}
+                                    className="px-4 py-2 border-b border-border/50 last:border-0 font-mono text-xs text-green-400"
+                                >
+                                    {log}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {!result && !isTesting ? (
                     <div className="h-full flex flex-col items-center justify-center text-center">
                         <div className="w-16 h-16 rounded-full bg-zinc-900 flex items-center justify-center mb-4">
                             <Play className="w-8 h-8 text-muted-foreground" />
@@ -61,7 +82,7 @@ export function TestPanel({ inputs, result, onRunTest, isTesting }: TestPanelPro
                             </div>
                         )}
                     </div>
-                ) : (
+                ) : result ? (
                     <div className="space-y-6">
                         <div
                             className={cn(
@@ -118,7 +139,7 @@ export function TestPanel({ inputs, result, onRunTest, isTesting }: TestPanelPro
                             </div>
                         )}
                     </div>
-                )}
+                ) : null}
             </div>
         </div>
     );

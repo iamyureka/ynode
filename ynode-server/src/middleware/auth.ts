@@ -168,7 +168,7 @@ export function getUserSessions(userId: string): SessionRow[] {
     .all(userId);
 }
 
-function validateSession(token: string): SessionRow | null {
+export function validateSession(token: string): SessionRow | null {
   const tokenHash = hashToken(token);
   return db
     .prepare(
