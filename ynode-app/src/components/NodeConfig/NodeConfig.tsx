@@ -1,4 +1,4 @@
-import { useState, useMemo, type DragEvent } from 'react';
+import { useState, useMemo, useEffect, useRef, type DragEvent } from 'react';
 import { useWorkflowStore } from '../../store/workflowStore';
 import { useNodeTypesStore } from '../../store/nodeTypesStore';
 import { Card, CardHeader, CardTitle, CardDescription } from '../ui/card';
@@ -33,8 +33,11 @@ import {
   Send,
   Sparkles,
   Type,
+  Edit,
+  Trash2,
   type LucideIcon,
 } from 'lucide-react';
+import { useCustomNodesStore } from '../../store/customNodesStore';
 import { cn } from '../../lib/utils';
 
 const iconMap: Record<string, LucideIcon> = {
@@ -59,6 +62,8 @@ export const NodeConfig = () => {
   const updateNodeConfig = useWorkflowStore((state) => state.updateNodeConfig);
   const addNode = useWorkflowStore((state) => state.addNode);
 
+  const { fetchCustomNodes } = useCustomNodesStore();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<NodeCategory | null>(
     null
@@ -67,6 +72,10 @@ export const NodeConfig = () => {
   // Use store nodes (includes integration nodes from server)
   const storeNodes = useNodeTypesStore((state) => state.nodes);
   const categories = Object.keys(CategoryMeta) as NodeCategory[];
+
+  useEffect(() => {
+    fetchCustomNodes();
+  }, [fetchCustomNodes]);
 
   const nodeTypes = useMemo(
     () =>
@@ -697,31 +706,130 @@ interface NodePaletteItemProps {
 }
 
 function NodePaletteItem({ node, onDragStart, onClick }: NodePaletteItemProps) {
+  const isCore = nodeRegistry.has(node.type);
+  const [showContextMenu, setShowContextMenu] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const { customNodes, openModal, deleteCustomNode } = useCustomNodesStore();
+
+  const customNode = customNodes.find(n => n.type === node.type);
+  const isCustom = !!customNode;
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    if (!isCustom) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    setMenuPosition({ x: e.clientX, y: e.clientY });
+    setShowContextMenu(true);
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowContextMenu(false);
+
+    if (customNode) {
+      openModal(customNode);
+    }
+  };
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowContextMenu(false);
+
+    if (customNode && confirm(`Are you sure you want to delete "${node.label}"?`)) {
+      await deleteCustomNode(customNode.id);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e: globalThis.MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setShowContextMenu(false);
+      }
+    };
+
+    if (showContextMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showContextMenu]);
+
+  const getBadge = () => {
+    if (isCore) {
+      return (
+        <Badge className="text-[8px] px-1 py-0 h-3.5 bg-purple-500/20 text-purple-400 border-purple-500/30 hover:bg-purple-500/30 shrink-0">
+          CORE
+        </Badge>
+      );
+    }
+    if (isCustom) {
+      return (
+        <Badge className="text-[8px] px-1 py-0 h-3.5 bg-orange-500/20 text-orange-400 border-orange-500/30 hover:bg-orange-500/30 shrink-0">
+          CUSTOM
+        </Badge>
+      );
+    }
+    return null;
+  };
+
   return (
-    <div
-      draggable
-      onDragStart={(e) => onDragStart(e, node.type)}
-      onClick={onClick}
-      className="flex items-center gap-3 p-2.5 rounded-md hover:bg-secondary/50 cursor-grab active:cursor-grabbing transition-all group"
-    >
+    <>
       <div
-        className={cn(
-          'p-2 rounded-md bg-background border border-border/40 group-hover:bg-secondary transition-colors',
-          `text-${node.color}`
-        )}
+        draggable
+        onDragStart={(e) => onDragStart(e, node.type)}
+        onClick={onClick}
+        onContextMenu={handleContextMenu}
+        className="flex items-center gap-3 p-2.5 rounded-md hover:bg-secondary/50 cursor-grab active:cursor-grabbing transition-all group"
       >
-        <node.icon className="w-4 h-4" />
+        <div
+          className={cn(
+            'p-2 rounded-md bg-background border border-border/40 group-hover:bg-secondary transition-colors',
+            `text-${node.color}`
+          )}
+        >
+          <node.icon className="w-4 h-4" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h2 className="font-medium text-foreground text-xs group-hover:text-primary transition-colors">
+            {node.label}
+          </h2>
+          <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">
+            {node.description}
+          </p>
+        </div>
+        {getBadge()}
+        <GripVertical className="w-3 h-3 text-muted-foreground/30 group-hover:text-muted-foreground transition-colors shrink-0" />
       </div>
-      <div className="flex-1 min-w-0">
-        <h2 className="font-medium text-foreground text-xs group-hover:text-primary transition-colors">
-          {node.label}
-        </h2>
-        <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">
-          {node.description}
-        </p>
-      </div>
-      <GripVertical className="w-3 h-3 text-muted-foreground/30 group-hover:text-muted-foreground transition-colors" />
-    </div>
+
+      {showContextMenu && isCustom && (
+        <div
+          ref={menuRef}
+          style={{
+            position: 'fixed',
+            left: menuPosition.x,
+            top: menuPosition.y,
+          }}
+          className="w-36 bg-background rounded-md shadow-xl overflow-hidden z-[200]"
+        >
+          <button
+            onClick={handleEdit}
+            className="w-full flex items-center gap-2 px-3 py-2 text-xs text-zinc-300 hover:bg-white/5 hover:text-white transition-colors"
+          >
+            <Edit className="w-3 h-3" />
+            Edit Node
+          </button>
+          <button
+            onClick={handleDelete}
+            className="w-full flex items-center gap-2 px-3 py-2 text-xs text-zinc-300 hover:bg-white/5 hover:text-red-400 transition-colors"
+          >
+            <Trash2 className="w-3 h-3" />
+            Delete Node
+          </button>
+        </div>
+      )}
+    </>
   );
 }
 
