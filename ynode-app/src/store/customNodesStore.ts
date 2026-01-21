@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { getAuthHeaders } from './authStore';
+import { useNodeTypesStore } from './nodeTypesStore';
 
 const API_BASE = 'http://localhost:3001/api';
 
@@ -135,6 +136,7 @@ export const useCustomNodesStore = create<CustomNodesState>((set, get) => ({
         }
         const node = await response.json();
         set({ customNodes: [node, ...get().customNodes] });
+        useNodeTypesStore.getState().fetchNodeTypes(true);
         return node;
     },
 
@@ -159,6 +161,7 @@ export const useCustomNodesStore = create<CustomNodesState>((set, get) => ({
         set({
             customNodes: get().customNodes.map((n) => (n.id === id ? updated : n)),
         });
+        useNodeTypesStore.getState().fetchNodeTypes(true);
         return updated;
     },
 
@@ -169,6 +172,7 @@ export const useCustomNodesStore = create<CustomNodesState>((set, get) => ({
         });
         if (!response.ok) throw new Error('Failed to delete custom node');
         set({ customNodes: get().customNodes.filter((n) => n.id !== id) });
+        useNodeTypesStore.getState().fetchNodeTypes(true);
     },
 
     testCode: async (

@@ -49,17 +49,16 @@ function App() {
 
   useEffect(() => {
     const init = async () => {
-      // Fetch node types from server (includes built-in + plugins)
+      if (token) {
+        await checkAuth();
+      }
+
       try {
         await fetchNodeTypes();
       } catch (error) {
         console.error('Failed to load node types:', error);
       }
 
-      // Check authentication
-      if (token) {
-        await checkAuth();
-      }
       setIsInitializing(false);
     };
     init();

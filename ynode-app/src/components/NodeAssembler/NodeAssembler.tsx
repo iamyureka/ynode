@@ -968,7 +968,7 @@ export function NodeAssembler() {
                             <label
                                 className="text-[10px] text-zinc-500 cursor-pointer"
                             >
-                                Node Assembler v0.0.2-alpha
+                                Node Assembler v0.0.3-alpha
                             </label>
                         </div>
                     </div>

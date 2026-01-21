@@ -3,6 +3,7 @@ import type {
   SerializedNodeDefinition,
   CategoryMetadata,
 } from '../types/nodeTypes';
+import { getAuthHeaders } from '../store/authStore';
 
 const API_BASE = 'http://localhost:3001/api';
 
@@ -14,6 +15,7 @@ const CACHE_TTL = 0; // Disabled
 /**
  * Fetch all available node types from the server.
  * This includes built-in nodes and any loaded community plugins.
+ * If authenticated, also includes user's custom nodes.
  */
 export async function fetchNodeTypes(
   forceRefresh = false
@@ -25,7 +27,9 @@ export async function fetchNodeTypes(
     return nodeTypesCache;
   }
 
-  const response = await fetch(`${API_BASE}/node-types`);
+  const response = await fetch(`${API_BASE}/node-types`, {
+    headers: getAuthHeaders(),
+  });
 
   if (!response.ok) {
     throw new Error('Failed to fetch node types');

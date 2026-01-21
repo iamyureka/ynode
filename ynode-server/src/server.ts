@@ -15,6 +15,7 @@ import {
 } from './websocket/handler';
 import {
   authMiddleware,
+  optionalAuthMiddleware,
   registerUser,
   loginUser,
   changePassword,
@@ -173,12 +174,43 @@ registerBuiltinNodes();
   /**
    * GET /api/node-types
    * Returns all registered node definitions for the frontend.
-   * This includes built-in nodes and any loaded community plugins.
-   * No authentication required - nodes are public metadata.
+   * This includes built-in nodes, loaded community plugins, and custom nodes (if authenticated).
    */
-  app.get('/api/node-types', (_req, res) => {
+  app.get('/api/node-types', optionalAuthMiddleware, (req, res) => {
     try {
       const response = serializeNodeTypes('2.1.0');
+
+      if (req.userId) {
+        const customNodeRows = getCustomNodesByUserId(req.userId);
+        const customNodes = customNodeRows.map((row) => ({
+          type: row.type,
+          label: row.label,
+          description: row.description || undefined,
+          category: row.category as 'custom' | 'trigger' | 'logic' | 'transform' | 'integration' | 'ai' | 'communication' | 'data' | 'utility',
+          icon: row.icon,
+          color: row.color || undefined,
+          inputs: JSON.parse(row.inputs),
+          outputs: JSON.parse(row.outputs),
+          defaultConfig: row.default_config ? JSON.parse(row.default_config) : {},
+          // Transform configSchema (key) to configFields (name) for DynamicConfigPanel compatibility
+          configFields: row.config_schema ? JSON.parse(row.config_schema).map((field: { key: string; label?: string; type: string; default?: unknown; options?: unknown[]; credentialType?: string }) => ({
+            name: field.key,
+            type: field.type === 'credential' ? 'string' : field.type, // credential type renders via credentialId check
+            required: true,
+            default: field.default,
+            enumValues: field.options?.map((o: unknown) => typeof o === 'object' && o !== null && 'value' in o ? (o as { value: string }).value : String(o)),
+          })) : [],
+          credentials: row.credentials ? JSON.parse(row.credentials) : undefined,
+          usesMemory: row.uses_memory === 1,
+          usesWorkflowMemory: row.uses_workflow_memory === 1,
+          requiresNetwork: row.requires_network === 1,
+          isCustom: true,
+          customNodeId: row.id,
+        }));
+
+        response.nodes = [...response.nodes, ...customNodes] as typeof response.nodes;
+      }
+
       res.json(response);
     } catch (error) {
       console.error('GET /api/node-types error:', error);
