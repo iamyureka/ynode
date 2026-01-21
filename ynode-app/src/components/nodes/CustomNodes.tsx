@@ -1,23 +1,20 @@
-import { memo, useCallback, useState } from 'react';
-import { Handle, Position, useReactFlow } from '@xyflow/react';
+import { memo, useCallback, useMemo } from 'react';
+import { Handle, Position } from '@xyflow/react';
 import type { NodeProps } from '@xyflow/react';
-import type { NodeData, NodeStatus, PortDataType } from '@ynode/core';
-import { getTypeColor } from '@ynode/core';
-import {
-  Zap,
-  Globe,
-  Split,
-  Play,
-  Trash2,
-  MoreHorizontal,
-  Copy,
-  Clipboard,
-} from 'lucide-react';
+import { Zap, Globe, Split, Play } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { cn } from '../../lib/utils';
-import { useWorkflowStore } from '../../store/workflowStore';
+import { useNodeTypesStore } from '../../store/nodeTypesStore';
+import { GenericNode } from './GenericNode';
+import {
+  NodeToolbar,
+  CustomHandle,
+  ExecutionBadge,
+  getExecutionStateClasses,
+} from './NodeComponents';
+import type { ExtendedNodeData } from './NodeComponents';
 
 export { CommentNode } from './CommentNode';
 
@@ -26,195 +23,9 @@ export function setGlobalOnRun(callback: () => void) {
   globalOnRun = callback;
 }
 
-interface ExtendedNodeData extends NodeData {
-  executionState?: NodeStatus;
-  isCurrentlyExecuting?: boolean;
-}
-
-const getExecutionStateClasses = (
-  state?: NodeStatus,
-  isExecuting?: boolean
-) => {
-  if (isExecuting) {
-    return 'animate-pulse ring-2 ring-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.4)]';
-  }
-  switch (state) {
-    case 'running':
-      return 'ring-2 ring-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.3)]';
-    case 'success':
-      return 'ring-2 ring-green-500 shadow-[0_0_15px_rgba(34,197,94,0.3)]';
-    case 'error':
-      return 'ring-2 ring-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]';
-    case 'skipped':
-      return 'opacity-50';
-    default:
-      return '';
-  }
-};
-
-const ExecutionBadge = ({ state }: { state?: NodeStatus }) => {
-  if (!state || state === 'pending') return null;
-
-  const config = {
-    running: {
-      label: 'Running',
-      className: 'bg-yellow-500/20 text-yellow-400 animate-pulse',
-    },
-    success: { label: 'Done', className: 'bg-green-500/20 text-green-400' },
-    error: { label: 'Error', className: 'bg-red-500/20 text-red-400' },
-    skipped: { label: 'Skipped', className: 'bg-gray-500/20 text-gray-400' },
-  }[state];
-
-  if (!config) return null;
-
-  return (
-    <Badge
-      variant="secondary"
-      className={cn(
-        'text-[9px] absolute -top-[35px] right-1 whitespace-nowrap',
-        config.className
-      )}
-    >
-      {config.label}
-    </Badge>
-  );
-};
-
-interface NodeToolbarProps {
-  nodeId: string;
-  selected: boolean;
-}
-
-const NodeToolbar = ({ nodeId, selected }: NodeToolbarProps) => {
-  const { deleteElements } = useReactFlow();
-  const [showMenu, setShowMenu] = useState(false);
-  const copySelectedNodes = useWorkflowStore(
-    (state) => state.copySelectedNodes
-  );
-  const duplicateSelectedNodes = useWorkflowStore(
-    (state) => state.duplicateSelectedNodes
-  );
-
-  const handleDelete = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      deleteElements({ nodes: [{ id: nodeId }] });
-    },
-    [deleteElements, nodeId]
-  );
-
-  const handleMenuClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      setShowMenu(!showMenu);
-    },
-    [showMenu]
-  );
-
-  const handleCopy = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      copySelectedNodes();
-      setShowMenu(false);
-    },
-    [copySelectedNodes]
-  );
-
-  const handleDuplicate = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      duplicateSelectedNodes();
-      setShowMenu(false);
-    },
-    [duplicateSelectedNodes]
-  );
-
-  return (
-    <div
-      className={cn(
-        'absolute -top-10 flex items-center gap-1 p-1 shadow-xl z-50 transition-opacity duration-150',
-        selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-      )}
-      onMouseLeave={() => setShowMenu(false)}
-    >
-      <button
-        onClick={handleDelete}
-        className="p-1.5 rounded-md text-muted-foreground hover:text-red-400 transition-colors"
-        title="Delete"
-      >
-        <Trash2 className="w-3.5 h-3.5" />
-      </button>
-      <div className="relative">
-        <button
-          onClick={handleMenuClick}
-          className="p-1.5 rounded-md text-muted-foreground hover:text-white transition-colors"
-          title="More options"
-        >
-          <MoreHorizontal className="w-3.5 h-3.5" />
-        </button>
-
-        {showMenu && (
-          <div className="absolute top-full right-0 mt-1 w-36 bg-background rounded-lg shadow-xl overflow-hidden z-50">
-            <button
-              onClick={handleCopy}
-              className="w-full flex items-center gap-2 px-3 py-2 text-xs text-zinc-300 hover:bg-white/5 hover:text-white transition-colors"
-            >
-              <Copy className="w-3 h-3" />
-              Copy
-            </button>
-            <button
-              onClick={handleDuplicate}
-              className="w-full flex items-center gap-2 px-3 py-2 text-xs text-zinc-300 hover:bg-white/5 hover:text-white transition-colors"
-            >
-              <Clipboard className="w-3 h-3" />
-              Duplicate
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-// Custom handle component with type-based colors
-interface CustomHandleProps {
-  type: 'source' | 'target';
-  position: Position;
-  id?: string;
-  portType?: PortDataType;
-  className?: string;
-  style?: React.CSSProperties;
-}
-
-const CustomHandle = ({
-  type,
-  position,
-  id,
-  portType = 'any',
-  className,
-  style,
-}: CustomHandleProps) => {
-  const typeColor = getTypeColor(portType);
-
-  return (
-    <Handle
-      type={type}
-      position={position}
-      id={id}
-      style={{
-        ...style,
-        backgroundColor: typeColor,
-        borderColor: typeColor,
-      }}
-      className={cn(
-        '!w-3 !h-3 !border-2',
-        '!shadow-[0_0_6px_currentColor]',
-        className
-      )}
-    />
-  );
-};
-
+/**
+ * TriggerNode - Special node with a play button to start workflow execution
+ */
 export const TriggerNode = memo(({ data, selected, id }: NodeProps) => {
   const nodeData = data as ExtendedNodeData;
 
@@ -264,6 +75,11 @@ export const TriggerNode = memo(({ data, selected, id }: NodeProps) => {
   );
 });
 
+TriggerNode.displayName = 'TriggerNode';
+
+/**
+ * HttpRequestNode - Shows method badge and URL preview
+ */
 export const HttpRequestNode = memo(({ data, selected, id }: NodeProps) => {
   const nodeData = data as ExtendedNodeData;
   const config = nodeData.config as { method?: string; url?: string };
@@ -309,6 +125,11 @@ export const HttpRequestNode = memo(({ data, selected, id }: NodeProps) => {
   );
 });
 
+HttpRequestNode.displayName = 'HttpRequestNode';
+
+/**
+ * IfElseNode - Conditional node with TRUE/FALSE output handles
+ */
 export const IfElseNode = memo(({ data, selected, id }: NodeProps) => {
   const nodeData = data as ExtendedNodeData;
 
@@ -376,13 +197,12 @@ export const IfElseNode = memo(({ data, selected, id }: NodeProps) => {
   );
 });
 
+IfElseNode.displayName = 'IfElseNode';
+
 import { CommentNode } from './CommentNode';
-import { GenericNode } from './GenericNode';
-import { useNodeTypesStore } from '../../store/nodeTypesStore';
-import { useMemo } from 'react';
 
 // Custom node components for nodes that need special rendering
-const customNodeComponents: Record<string, any> = {
+const customNodeComponents: Record<string, React.ComponentType<NodeProps>> = {
   trigger: TriggerNode,
   httpRequest: HttpRequestNode,
   ifElse: IfElseNode,
@@ -397,11 +217,11 @@ const customNodeComponents: Record<string, any> = {
  * This allows community developers to create nodes
  * without having to create custom React components.
  */
-export function useNodeTypes(): Record<string, any> {
+export function useNodeTypes(): Record<string, React.ComponentType<NodeProps>> {
   const allNodes = useNodeTypesStore((state) => state.nodes);
 
   return useMemo(() => {
-    const types: Record<string, any> = { ...customNodeComponents };
+    const types: Record<string, React.ComponentType<NodeProps>> = { ...customNodeComponents };
 
     // Add GenericNode for all nodes from server that don't have custom components
     for (const nodeDef of allNodes) {
@@ -417,4 +237,3 @@ export function useNodeTypes(): Record<string, any> {
 // Static export for backwards compatibility (uses custom nodes only)
 // For full dynamic support, use the useNodeTypes hook
 export const nodeTypes = customNodeComponents;
-
